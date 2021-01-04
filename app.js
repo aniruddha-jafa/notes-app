@@ -4,8 +4,17 @@
 const express = require('express')
 const app = express()
 
+const path = require('path')
+const viewsPath = path.join(__dirname, '/views')
+app.use(express.static(viewsPath))
+
 app.get('/', (req, res) => {
-  res.send('Hello world!')
+  res.sendFile('index.html')
+})
+
+app.post('/', (req, res) => {
+  console.log('Submission detected, redirecting...')
+  res.redirect('/')
 })
 
 
