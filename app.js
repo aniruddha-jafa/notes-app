@@ -24,12 +24,14 @@ app.use(express.static(viewsPath))
 hbs.registerPartials(partialsPath)
 app.set('view engine', 'hbs')
 
+// config
+app.use(express.urlencoded({ extended: false }))
+
 // routes
 app.use('/', homeRouter)
 app.use('/api', notesRouter)
 
 const portToUse = process.env.port || 3000
-
 app.listen(portToUse, () => {
   console.log(`Listening at port ${portToUse}...`)
 })
