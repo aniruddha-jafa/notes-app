@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-{{> head}}
+<head>
+  {{> default_head}}
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
 <body>
-  {{> header}}
   {{> noteform}}
+  {{> noteform_handler}}
+  <script type="module" src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 </body>
 </html>
