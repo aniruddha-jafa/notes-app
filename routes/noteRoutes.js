@@ -1,36 +1,22 @@
-
-
 'use strict'
 
 const express = require('express')
 const router = express.Router()
-const { body, validationResult } = require('express-validator')
-const cors = require('cors')
+const { body } = require('express-validator')
 
-router.get('/create', (req, res) => {
-  res.render('note', {})
+let notes = []
+
+router.get('/', (req, res) => {
+  res.render('home', { notes: notes, message: "hello world" })
 })
 
-router.post('/create', (req, res) => {
-  console.log(req.body)
-  const formData = req.body
-  res.send({ message: 'Successful submit!' })
+router.post('/create', async (req, res, next) => {
+  const formData = await req.body
+  console.log(formData)
+  await notes.push(formData)
+  console.log(`Note stored! you currently have ${notes.length} notes`)
+  res.redirect('/')
+  next()
 })
-
-const validators = [
-  body('title').trim().escape(),
-  body('title').not().isEmpty(),
-  body('title').isLength({ min: 2 }),
-  body('note').trim().escape(),
-  body('note').not().isEmpty(),
-  body('note').isLength({ min: 3 })
-]
-
-router.get('/notes', (req, res) => {
-  res.send('To implement: list notes')
-})
-
-
-
 
 module.exports = router
