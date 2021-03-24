@@ -26,7 +26,7 @@ hbs.registerPartials(partialsPath)
 app.set('view engine', 'hbs')
 
 // routes
-app.use(notesRouter)
+app.use('/notes', notesRouter)
 
 const port = process.env.PORT || 8000
 
