@@ -17,7 +17,7 @@ async function editorFormHandler() {
 
       event.preventDefault()
       const formData = await makeFormDataJSON(form, quillEditor)
-      await postJSONData(formData, '/create')
+      await postJSONData(formData, '/notes')
       window.location.reload()
 
     })
@@ -25,7 +25,7 @@ async function editorFormHandler() {
 
   }
   catch(error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -33,22 +33,22 @@ async function editorFormHandler() {
 async function makeFormDataJSON(form, quillEditor) {
   try {
     const date = new Date()
-    const currentDateTime = await `${date.toTimeString()} ${date.toDateString()}`
+    const currentDateTime = await date.toISOString()
 
     const noteBody = await JSON.stringify(quillEditor.getContents())
+    const formData = new FormData(form)
+
     let formObject = {
       body: noteBody,
-      date: currentDateTime
+      date: currentDateTime,
+      title: formData['title'],
     }
-    const formData = new FormData(form)
-    for (let [key, val] of formData.entries()) {
-       formObject[key] = val
-     }
+
     const formJSON = await JSON.stringify(formObject)
     return formJSON
   }
   catch(err) {
-    console.log(err)
+    console.error(err)
   }
 }
 
@@ -60,10 +60,13 @@ async function postJSONData(data, url) {
       body: data
     })
     if (!response.ok) {
+      console.error(response)
       throw new Error(response)
+    } else {
+      console.log(response)
     }
   }
   catch(err) {
-    console.log(err)
+    console.error(err)
     }
   }

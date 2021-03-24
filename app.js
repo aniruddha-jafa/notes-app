@@ -26,7 +26,11 @@ hbs.registerPartials(partialsPath)
 app.set('view engine', 'hbs')
 
 // routes
-app.use(notesRouter)
+<<<<<<< HEAD
+app.use('/notes', notesRouter)
+=======
+app.use('/', notesRouter)
+>>>>>>> af98ad6 (edited api end-points)
 
 const port = process.env.PORT || 8000
 
