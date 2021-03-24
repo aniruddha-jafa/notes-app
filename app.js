@@ -7,6 +7,7 @@ const app = express()
 
 // config
 app.use(express.json())
+require('dotenv').config()
 
 // libraries
 const path = require('path')
@@ -27,8 +28,8 @@ app.set('view engine', 'hbs')
 // routes
 app.use(notesRouter)
 
-const portToUse = process.env.port || 3000
+const port = process.env.PORT || 8000
 
-app.listen(portToUse, () => {
-  console.log(`Listening at port ${portToUse}...`)
+app.listen(port, () => {
+  console.log(`Listening at port ${port}...`)
 })
