@@ -11,13 +11,13 @@ const quillEditor = new Quill('#editor', editorOptions)
 async function editorFormHandler() {
   try {
 
-    const form = await document.querySelector('form')
+    const form = await document.querySelector('#note-form')
 
     form.addEventListener('submit', async event => {
 
       event.preventDefault()
-      const formData = await makeFormDataJSON(form, quillEditor)
-      await postJSONData(formData, '/notes')
+      const data = await makeFormDataJSON(form, quillEditor)
+      await postJSONData(data, '/notes')
       window.location.reload()
 
     })
@@ -35,13 +35,14 @@ async function makeFormDataJSON(form, quillEditor) {
     const date = new Date()
     const currentDateTime = await date.toISOString()
 
-    const noteBody = await JSON.stringify(quillEditor.getContents())
     const formData = new FormData(form)
+
+    const noteBody = await JSON.stringify(quillEditor.getContents())
 
     let formObject = {
       body: noteBody,
       date: currentDateTime,
-      title: formData['title'],
+      title: formData.get('title'),
     }
 
     const formJSON = await JSON.stringify(formObject)
