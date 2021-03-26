@@ -6,7 +6,6 @@ const express = require('express')
 const app = express()
 
 // config
-app.use(express.json())
 require('dotenv').config()
 
 // libraries
@@ -26,7 +25,7 @@ hbs.registerPartials(partialsPath)
 app.set('view engine', 'hbs')
 
 // routes
-app.use('/notes', notesRouter)
+app.use('/api', notesRouter)
 
 const port = process.env.PORT || 8000
 
