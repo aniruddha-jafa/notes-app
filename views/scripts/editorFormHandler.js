@@ -17,7 +17,7 @@ async function editorFormHandler() {
 
       event.preventDefault()
       const data = await makeFormDataJSON(form, quillEditor)
-      await postJSONData(data, '/notes')
+      await postJSONData(data, '/api/notes')
       window.location.reload()
 
     })

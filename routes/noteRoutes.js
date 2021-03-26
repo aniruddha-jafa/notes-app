@@ -1,12 +1,12 @@
 'use strict'
 
 // libraries
-const express = require('express')
-const router = express.Router()
-const { body } = require('express-validator')
+const router = require('express').Router()
 
-const Note = require('../models/note')
+// modules
+const noteController = require('../controllers/noteController')
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 router.get('/', (req, res) => {
@@ -49,5 +49,10 @@ router.post('/api/notes', noteController.notesPostAPI)  // CREATE new note
 
 
 >>>>>>> af98ad6 (edited api end-points)
+=======
+router.get('/notes', noteController.notesGet)
+
+router.post('/notes', noteController.notesPost)
+>>>>>>> 8594c34 (Moved route-handlers to /controllers)
 
 module.exports = router
