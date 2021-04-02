@@ -6,18 +6,33 @@ const jsonParser = require('express').json()
 // modules
 const Note = require('../models/note')
 
-exports.notesGet = async function (req, res, next) {
+
+exports.getHome = async function (req, res, next) {
   try {
-      res.render('home', { notes: [], message: "hello world" })
+      res.render('home')
     } catch(err) {
       next(err)
     }
   }
 
 
+exports.notesReadOne = async function (req, res, next) {
+  try {
+    const note = await Note.findById(req.params.id)
+    if (!note) {
+      throw new Error('Note not found')
+    }
+    res.json(note)
+    next()
+  } catch(err) {
+    next(err)
+  }
+}
+
+
 // READ all notes
 let LIMIT = 5, skip = 0
-exports.notesGetAPI = async function (req, res, next) {
+exports.notesReadMany = async function (req, res, next) {
   try {
     const notes = await Note.find({}).skip(skip).limit(LIMIT)
     res.json(notes)
@@ -30,8 +45,7 @@ exports.notesGetAPI = async function (req, res, next) {
 
 }
 
-// CREATE new note
-exports.notesPostAPI = [
+exports.notesCreateOne = [
   jsonParser,
   async function (req, res, next)  {
    try {

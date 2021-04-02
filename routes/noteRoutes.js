@@ -6,12 +6,12 @@ const { body } = require('express-validator')
 
 const noteController = require('../controllers/noteController')
 
-router.get('/notes', noteController.notesGet)   // home page
+router.get('/notes', noteController.getHome)
 
-router.get('/api/notes', noteController.notesGetAPI) // READ all notes
+router.get('api/notes/:id', noteController.notesReadOne)
 
-router.post('/api/notes', noteController.notesPostAPI)  // CREATE new note
+router.get('/api/notes', noteController.notesReadMany)
 
-
+router.post('/api/notes', noteController.notesCreateOne)
 
 module.exports = router

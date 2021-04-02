@@ -1,43 +1,50 @@
 'use strict'
 
-document.addEventListener('DOMContentLoaded', getNotesList)
+document.addEventListener('DOMContentLoaded', makeNotesList)
 
-async function getNotesList() {
+
+async function makeNotesList() {
   try {
-    const notesList = document.querySelector('#notes-list')
+    const notesList = document.querySelector('#notes-list-block')
+    const editor  =  document.querySelector('#editor')
+
     let notes = await fetch('/api/notes', {
                   headers: { 'Content-Type': 'application/json' }
                 })
-
-
+    notes =  await notes.json()
     const placeholder = document.createDocumentFragment()
-    notes = await notes.json()
+    const makeNoteItems = notes.map(async note => { makeNoteItem(note, placeholder) })
 
-    const createNoteLinks = notes.map(async note => {
-      try {
-        const date = new Date(note.date)
-        const span = document.createElement('span')
-        span.innerHTML =  `<a href=/notes/${note._id}>
-                            ${note.title}, ${date.toLocaleDateString()}
-                          </a>
-                          <br>`
-        placeholder.appendChild(span)
-        return
-      } catch(err) {
-        console.error(err)
-      }
-
-    })
-
-    Promise.all(createNoteLinks)
-    .then(res => {
-      notesList.appendChild(placeholder)
-    })
-
-
+    Promise.all(makeNoteItems)
+    .then(res => { notesList.appendChild(placeholder) })
 
   } catch(err) {
     console.error(err)
   }
+}
 
+async function makeNoteItem (note, placeholder) {
+  try {
+    const date = new Date(note.date)
+    const noteItem = document.createElement('div')
+    noteItem.classList.add('notes-list-item')
+    noteItem.textContent =  `${note.title}, ${date.toDateString()}`
+
+    placeholder.appendChild(noteItem)
+
+    noteItem.addEventListener("click", async e => {
+      try {
+        await editor
+        let quillEditor = new Quill(editor)
+        quillEditor.setContents(note.body.ops)
+        await title
+        title.value = note.title
+      } catch(err) {
+        console.error(err)
+      }
+    })
+    return
+  } catch(err) {
+    console.error(err)
+  }
 }
