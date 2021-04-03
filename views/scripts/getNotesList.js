@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', makeNotesList)
 
 async function makeNotesList() {
   try {
-    const notesList = document.querySelector('#notes-list-container')
+    const notesList = document.querySelector(notesListContainerSelector)
     let notes = await makeFetchRequest('GET')
     notes =  await notes.json()
 
@@ -37,8 +37,8 @@ async function handleNoteItemClick() {
     try {
       // access params in event listener through 'this'
       isNewNote = false
-      const editor  =  document.querySelector('#quill-container')
-      const title = document.querySelector('#title')
+      const editor  =  document.querySelector(quillEditorSelector)
+      const title = document.querySelector('title')
       await editor, title
 
       const quillEditor = new Quill(editor)

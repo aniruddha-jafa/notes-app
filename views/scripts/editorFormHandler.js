@@ -2,26 +2,10 @@
 
 document.addEventListener("DOMContentLoaded", editorFormHandler)
 
-// intended to be in shared scope for all scripts
-let isNewNote = true
-const API_URL = '/api/notes'
-const editorOptions = {
-  theme: 'snow',
-  modules: {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline'],
-      ['image', 'code-block']
-    ]
-  },
-  scrollingContainer: '#scrolling-container',
-  placeholder: 'Compose an epic...'
-}
-
 async function editorFormHandler() {
   try {
-    const form = document.querySelector('#note-form')
-    const quillEditor = new Quill('#quill-container', editorOptions)
+    const form = document.querySelector(noteFormSelector)
+    const quillEditor = new Quill(quillEditorSelector, editorOptions)
     const args = {
       form: form,
       quillEditor: quillEditor
