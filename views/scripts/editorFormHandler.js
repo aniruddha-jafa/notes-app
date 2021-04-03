@@ -2,6 +2,9 @@
 
 document.addEventListener("DOMContentLoaded", editorFormHandler)
 
+// intended to be in shared scope for all scripts
+let isNewNote = true
+const API_URL = '/api/notes'
 const editorOptions = {
   theme: 'snow',
   modules: {
@@ -15,24 +18,36 @@ const editorOptions = {
   placeholder: 'Compose an epic...'
 }
 
-const quillEditor = new Quill('#quill-container', editorOptions)
-
 async function editorFormHandler() {
   try {
-    const form = await document.querySelector('#note-form')
-    form.addEventListener('submit', async event => {
-      try {
-        event.preventDefault()
-        const data = await makeFormDataJSON(form, quillEditor)
-        await postJSONData(data, '/api/notes')
-        //window.location.reload()
-      } catch(err) {
-        throw new Error(err)
-      }
-    })
+    const form = document.querySelector('#note-form')
+    const quillEditor = new Quill('#quill-container', editorOptions)
+    const args = {
+      form: form,
+      quillEditor: quillEditor
+    }
+    // bind to access params in event listener
+    form.addEventListener('submit', handleFormSubmit.bind(args))
   } catch(err) {
     console.error(err)
   }
+}
+
+async function handleFormSubmit() {
+  try {
+      event.preventDefault()
+       // access params in event listener through 'this'
+      const form = await this.form
+      const quillEditor = await this.quillEditor
+      const noteData = await makeFormDataJSON(form, quillEditor)
+      if (isNewNote) {
+        makeFetchRequest('POST', noteData)
+      } else {
+        makeFetchRequest('PUT', noteData)
+      }
+    } catch(err) {
+      throw new Error(err)
+    }
 }
 
 
@@ -46,31 +61,30 @@ async function makeFormDataJSON(form, quillEditor) {
     let formObject = {
       body: noteBody,
       date: currentDateTime,
-      title: formData.get('title'),
+      title: formData.get('title')
     }
 
     const formJSON = await JSON.stringify(formObject)
     return formJSON
-  }
-  catch(err) {
+  } catch(err) {
     console.error(err)
   }
 }
 
-async function postJSONData(data, url) {
+async function makeFetchRequest(httpMethod, url=API_URL, body=null) {
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: data
-    })
+    const headers = { 'Content-Type': 'application/json' }
+    let response
+    if (!body) {
+      response = await fetch(url, { method: httpMethod, headers: headers } )
+    } else {
+      response = await fetch(url, { method: httpMethod, headers: headers, body: body })
+    }
     if (!response.ok) {
       throw new Error(response)
-    } else {
-      console.log(response)
     }
-  }
-  catch(err) {
+    return response
+  } catch(err) {
     console.error(err)
     }
   }

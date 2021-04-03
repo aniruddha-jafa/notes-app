@@ -31,12 +31,12 @@ exports.notesReadOne = async function (req, res, next) {
 
 
 // READ all notes
-let LIMIT = 5, skip = 0
+let LIMIT = 5, skip = 20
 exports.notesReadMany = async function (req, res, next) {
   try {
     const notes = await Note.find({}).skip(skip).limit(LIMIT)
     res.json(notes)
-    skip += LIMIT
+    //skip += LIMIT
     next()
 
   } catch(err) {
