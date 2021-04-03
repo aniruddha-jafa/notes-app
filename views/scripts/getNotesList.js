@@ -5,15 +5,15 @@ document.addEventListener('DOMContentLoaded', makeNotesList)
 
 async function makeNotesList() {
   try {
-    const notesList = document.querySelector('#notes-list-block')
-    const editor  =  document.querySelector('#editor')
+    const notesList = document.querySelector('#notes-list-container')
+    const editor  =  document.querySelector('#quill-container')
 
     let notes = await fetch('/api/notes', {
                   headers: { 'Content-Type': 'application/json' }
                 })
     notes =  await notes.json()
     const placeholder = document.createDocumentFragment()
-    const makeNoteItems = notes.map(async note => { makeNoteItem(note, placeholder) })
+    const makeNoteItems = notes.map(async note => { makeNoteItem(note, placeholder, editor) })
 
     Promise.all(makeNoteItems)
     .then(res => { notesList.appendChild(placeholder) })
@@ -23,7 +23,7 @@ async function makeNotesList() {
   }
 }
 
-async function makeNoteItem (note, placeholder) {
+async function makeNoteItem (note, placeholder, editor) {
   try {
     const date = new Date(note.date)
     const noteItem = document.createElement('div')
@@ -40,7 +40,7 @@ async function makeNoteItem (note, placeholder) {
         await title
         title.value = note.title
       } catch(err) {
-        console.error(err)
+        throw new Error(err)
       }
     })
     return

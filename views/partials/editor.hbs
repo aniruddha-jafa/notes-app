@@ -1,14 +1,17 @@
 <form id='note-form'>
-  <label>Title </label>
-  <input
-    type="text"
-    name="title"
-    id='title'
-    minlength='2'
-    maxlength='50'
-    >
-  <br><br>
-  <div id="editor"></div>
-  <br>
-  <button type='submit'>Save</button>
-</form>
+    <div class="flex-item">
+      <label>Title </label>
+      <input
+        type="text"
+        name="title"
+        id='title'
+        minlength='2'
+        maxlength='50'
+        >
+      <button type='submit'>Save</button>
+    </div>
+    <div id="scrolling-container">
+      <div id="quill-container"></div>
+    </div>
+    <br>
+  </form>
