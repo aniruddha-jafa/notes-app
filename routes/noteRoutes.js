@@ -14,4 +14,6 @@ router.get('/api/notes', noteController.notesReadMany)
 
 router.post('/api/notes', noteController.notesCreateOne)
 
+router.put('/api/notes/:id', noteController.notesUpdateOne)
+
 module.exports = router

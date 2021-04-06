@@ -6,7 +6,6 @@ const jsonParser = require('express').json()
 // modules
 const Note = require('../models/note')
 
-
 exports.getHome = async function (req, res, next) {
   try {
       res.render('home')
@@ -62,3 +61,23 @@ exports.notesCreateOne = [
    next(err)
  }
 }]
+
+
+exports.notesUpdateOne = async function(req, res, next) {
+  try {
+
+    let formData = await req.body
+    formData.body = await JSON.parse(formData.body)
+
+    console.log('Update request for note:', formData)
+    const updatedNote = new Note(formData)
+
+    Note.findByIdAndUpdate(req.params.id, updatedNote)
+
+    res.json({ message: 'updated' })
+    next()
+
+  } catch (err) {
+    next(err)
+  }
+}
