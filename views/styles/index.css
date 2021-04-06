@@ -11,6 +11,10 @@
    height: 100%;
  }
 
+button:disabled {
+ color: grey;
+}
+
 .top-navbar {
   border-bottom: 0.2px solid grey;
 }

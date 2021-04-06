@@ -5,32 +5,38 @@ document.addEventListener('DOMContentLoaded', makeNotesList)
 async function makeNotesList() {
   try {
     const notesList = document.querySelector(globals.notesListContainerSelector)
+
     let notes = await makeFetchRequest('GET')
     notes =  await notes.json()
 
     const placeholder = document.createDocumentFragment()
-    const makeNoteItems = notes.map(async note => { makeNoteItem(note, placeholder) })
+    const makeNoteItems = notes.map(note => { makeNoteItem(note, placeholder) })
 
     Promise.all(makeNoteItems)
     .then(res => { notesList.appendChild(placeholder) })
+    .catch(err => { throw new Error(err) })
+
   } catch(err) {
     console.error(err)
   }
 }
 
+// async so that it returns a promise, can be used with Promise.all
+// in makeNoteItems
 async function makeNoteItem (note, placeholder) {
   try {
     const date = new Date(note.date)
     const noteItem = document.createElement('div')
     noteItem.classList.add('notes-list-item')
-    noteItem.textContent =  `${note.title}, ${date.toDateString()}`
+    noteItem.textContent =  await `${note.title}, ${date.toDateString()}`
     placeholder.appendChild(noteItem)
 
     // bind to access params in event listener
     noteItem.addEventListener("click", handleNoteItemClick.bind(note))
   } catch(err) {
-    console.error(err)
+    throw new Error(err)
   }
+
 }
 
 async function handleNoteItemClick() {
@@ -41,12 +47,43 @@ async function handleNoteItemClick() {
 
       const editor  =  document.querySelector(globals.quillEditorSelector)
       const title = document.querySelector('#title')
-      await editor, title
+      const initialContents = { ops: this.body.ops }
+      const initialContentAsString = JSON.stringify(initialContents)
 
-      const quillEditor = new Quill(editor)
+      await editor, title
+      await globals.quillEditor.setContents(initialContents)
       title.value = this.title
-      quillEditor.setContents(this.body.ops)
+      const args = {
+        initialContents: initialContentAsString
+      }
+      globals.quillEditor.on('text-change', verifyContentChange.bind(args))
+      disableSaveButton()
+
     } catch(err) {
       throw new Error(err)
     }
   }
+
+  async function verifyContentChange (delta, oldDelta, source) {
+    try {
+      const initialContents = this.initialContents
+      const currentContents = await JSON.stringify(globals.quillEditor.getContents())
+      if (source === 'user' && currentContents !== initialContents) {
+        enableSaveButton()
+      } else {
+        disableSaveButton()
+      }
+    } catch(err) {
+      throw new Error(err)
+    }
+  }
+
+async function disableSaveButton() {
+      const button = await document.querySelector(globals.saveButtonSelector)
+      button.disabled = true
+  }
+
+async function enableSaveButton() {
+        const button = await document.querySelector(globals.saveButtonSelector)
+        button.disabled = false
+    }

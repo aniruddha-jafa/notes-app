@@ -1,14 +1,13 @@
 'use strict'
 
-document.addEventListener("DOMContentLoaded", editorFormHandler)
+document.addEventListener("DOMContentLoaded", initialiseEditorAndHandler)
 
-async function editorFormHandler () {
+async function initialiseEditorAndHandler () {
   try {
     const form = document.querySelector(globals.noteFormSelector)
-    const quillEditor = new Quill(globals.quillEditorSelector, globals.editorOptions)
+    globals.quillEditor = new Quill(globals.quillEditorSelector, globals.editorOptions)
     const args = {
-      form: form,
-      quillEditor: quillEditor
+      form: form
     }
     // bind to access params in event listener
     form.addEventListener('submit', handleFormSubmitEvent.bind(args))
@@ -22,8 +21,7 @@ async function handleFormSubmitEvent () {
       event.preventDefault()
        // access params in event listener through 'this'
       const form = await this.form
-      const quillEditor = await this.quillEditor
-      const note = await formDataToJSON(form, quillEditor)
+      const note = await formDataToJSON(form)
       if (globals.isNewNote === true) {
         makeFetchRequest('POST', note)  // create new note
       } else {
@@ -35,19 +33,17 @@ async function handleFormSubmitEvent () {
 }
 
 
-async function formDataToJSON (form, quillEditor) {
+async function formDataToJSON (form) {
   try {
     const date = new Date()
     const currentDateTime = await date.toISOString()
     const formData = new FormData(form)
-    const noteBody = await JSON.stringify(quillEditor.getContents())
-
+    const noteBody = await JSON.stringify(globals.quillEditor.getContents())
     let formObject = {
       body: noteBody,
       date: currentDateTime,
       title: formData.get('title')
     }
-
     const formJSON = await JSON.stringify(formObject)
     return formJSON
   } catch(err) {

@@ -7,8 +7,10 @@ const globals = {
   currentNoteId: null,
   quillEditorSelector: '#quill-editor',
   editorContainerSelector: '#editor-container',
+  quillEditor: null,
   noteFormSelector: '#note-form',
   notesListContainerSelector: '#notes-list-container',
+  saveButtonSelector: '#save-button',
   editorOptions: {
     theme: 'snow',
     modules: {
