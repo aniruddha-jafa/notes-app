@@ -17,10 +17,12 @@ exports.getHome = async function (req, res, next) {
 
 exports.notesReadOne = async function (req, res, next) {
   try {
+
     const note = await Note.findById(req.params.id)
     if (!note) {
       throw new Error('Note not found')
     }
+    console.log('GET request for note')
     res.json(note)
     next()
   } catch(err) {
@@ -30,7 +32,7 @@ exports.notesReadOne = async function (req, res, next) {
 
 
 // READ all notes
-let LIMIT = 5, skip = 20
+let LIMIT = 5, skip = 0
 exports.notesReadMany = async function (req, res, next) {
   try {
     const notes = await Note.find({}).skip(skip).limit(LIMIT)
@@ -50,12 +52,13 @@ exports.notesCreateOne = [
    try {
      let formData = await req.body
      formData.body = await JSON.parse(formData.body)
-     console.log('formData', formData)
+     console.log('POST request for formData:', formData)
+     console.log('note body:', formData.body)
 
      let note = new Note(formData)
-     await note.save()
+     note = await note.save()
 
-     res.json({ message: 'submitted' })
+     res.json({ _id: note._id })
      next()
    } catch(err) {
    next(err)
@@ -69,7 +72,9 @@ exports.notesUpdateOne = async function(req, res, next) {
     let formData = await req.body
     formData.body = await JSON.parse(formData.body)
 
-    console.log('Update request for note:', formData)
+    console.log('PUT request for note:', formData)
+    console.log('note body:', formData.body)
+
     const updatedNote = new Note(formData)
 
     Note.findByIdAndUpdate(req.params.id, updatedNote)

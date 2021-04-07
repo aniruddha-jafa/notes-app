@@ -10,6 +10,7 @@ const globals = {
   quillEditor: null,
   noteFormSelector: '#note-form',
   notesListContainerSelector: '#notes-list-container',
+  newNoteButtonSelector: '#new-note-button',
   saveButtonSelector: '#save-button',
   editorOptions: {
     theme: 'snow',

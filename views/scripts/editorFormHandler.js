@@ -1,35 +1,81 @@
 'use strict'
 
-document.addEventListener("DOMContentLoaded", initialiseEditorAndHandler)
+document.addEventListener("DOMContentLoaded", createEditor)
 
-async function initialiseEditorAndHandler () {
+async function createEditor () {
   try {
-    const form = document.querySelector(globals.noteFormSelector)
-    globals.quillEditor = new Quill(globals.quillEditorSelector, globals.editorOptions)
-    const args = {
-      form: form
-    }
-    // bind to access params in event listener
-    form.addEventListener('submit', handleFormSubmitEvent.bind(args))
+    globals.quillEditor = new Quill('#quill-editor', globals.editorOptions)
+    const form = document.querySelector('#note-form')
+    const newNoteButton = document.querySelector('#new-note-button')
+
+    initialiseTrackChanges()
+
+    await form
+    form.addEventListener('submit', handleFormSubmit.bind({ form: form }))
+
+    await newNoteButton
+    newNoteButton.addEventListener('click', clearContents)
+
   } catch(err) {
     console.error(err)
   }
 }
 
-async function handleFormSubmitEvent () {
+
+function initialiseTrackChanges () {
+  globals.quillEditor.on('text-change',
+    watchForChange.bind( { contents: globals.quillEditor.getContents() } ))
+  enableSaveButton(false)
+}
+
+async function watchForChange (delta, oldDelta, source) {
+  try {
+    const initialContents = JSON.stringify(this.contents)
+    const currentContents = JSON.stringify(globals.quillEditor.getContents())
+    await initialContents, currentContents
+    if (source === 'user' && currentContents !== initialContents) {
+      enableSaveButton(true)
+    } else {
+      enableSaveButton(false)
+    }
+  } catch(err) {
+    throw new Error(err)
+  }
+}
+
+
+async function handleFormSubmit () {
   try {
       event.preventDefault()
        // access params in event listener through 'this'
       const form = await this.form
       const note = await formDataToJSON(form)
+      let res
       if (globals.isNewNote === true) {
-        makeFetchRequest('POST', note)  // create new note
+        res = await makeFetchRequest('POST', note)  // create new note, await server response
+        res = await res.json()
+        globals.currentNoteId = res._id  // unique id set by mongoDB
+        globals.isNewNote = false
       } else {
-        makeFetchRequest('PUT', note)  // update existing note
+        res = await makeFetchRequest('PUT', note)  // update existing note
       }
+      initialiseTrackChanges()
     } catch(err) {
       throw new Error(err)
     }
+}
+
+async function clearContents () {
+  try {
+    globals.isNewNote = true
+    globals.currentNoteId = null
+    await globals.quillEditor.setText('')
+    document.querySelector('#title').value = ''
+    initialiseEditor()
+  } catch(err) {
+    console.error(err)
+  }
+
 }
 
 

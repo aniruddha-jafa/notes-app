@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', makeNotesList)
 
 async function makeNotesList() {
   try {
-    const notesList = document.querySelector(globals.notesListContainerSelector)
+    const notesList = document.querySelector('#notes-list-container')
 
     let notes = await makeFetchRequest('GET')
     notes =  await notes.json()
@@ -25,6 +25,7 @@ async function makeNotesList() {
 // in makeNoteItems
 async function makeNoteItem (note, placeholder) {
   try {
+    console.log('Current note.body:', note.body)
     const date = new Date(note.date)
     const noteItem = document.createElement('div')
     noteItem.classList.add('notes-list-item')
@@ -45,45 +46,26 @@ async function handleNoteItemClick() {
       globals.isNewNote = false
       globals.currentNoteId = this._id
 
-      const editor  =  document.querySelector(globals.quillEditorSelector)
       const title = document.querySelector('#title')
-      const initialContents = { ops: this.body.ops }
-      const initialContentAsString = JSON.stringify(initialContents)
-
-      await editor, title
-      await globals.quillEditor.setContents(initialContents)
+      await title
       title.value = this.title
-      const args = {
-        initialContents: initialContentAsString
-      }
-      globals.quillEditor.on('text-change', verifyContentChange.bind(args))
-      disableSaveButton()
+
+      const initialContents = this.body //{ ops: this.body.ops }
+      await globals.quillEditor.setContents(initialContents)
+      initialiseTrackChanges()
 
     } catch(err) {
       throw new Error(err)
     }
   }
 
-  async function verifyContentChange (delta, oldDelta, source) {
+async function enableSaveButton(toEnable) {
     try {
-      const initialContents = this.initialContents
-      const currentContents = await JSON.stringify(globals.quillEditor.getContents())
-      if (source === 'user' && currentContents !== initialContents) {
-        enableSaveButton()
-      } else {
-        disableSaveButton()
-      }
+      const button = await document.querySelector('#save-button')
+      button.disabled = !toEnable
+
     } catch(err) {
-      throw new Error(err)
+      console.error(err)
     }
-  }
 
-async function disableSaveButton() {
-      const button = await document.querySelector(globals.saveButtonSelector)
-      button.disabled = true
   }
-
-async function enableSaveButton() {
-        const button = await document.querySelector(globals.saveButtonSelector)
-        button.disabled = false
-    }
