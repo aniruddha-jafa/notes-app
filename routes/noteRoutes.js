@@ -1,36 +1,18 @@
-
-
 'use strict'
 
-const express = require('express')
-const router = express.Router()
-const { body, validationResult } = require('express-validator')
-const cors = require('cors')
+// libraries
+const router = require('express').Router()
 
-router.get('/create', (req, res) => {
-  res.render('note', {})
-})
+const noteController = require('../controllers/noteController')
 
-router.post('/create', (req, res) => {
-  console.log(req.body)
-  const formData = req.body
-  res.send({ message: 'Successful submit!' })
-})
+router.get('/notes', noteController.getHome)
 
-const validators = [
-  body('title').trim().escape(),
-  body('title').not().isEmpty(),
-  body('title').isLength({ min: 2 }),
-  body('note').trim().escape(),
-  body('note').not().isEmpty(),
-  body('note').isLength({ min: 3 })
-]
+router.get('api/notes/:id', noteController.notesReadOne)
 
-router.get('/notes', (req, res) => {
-  res.send('To implement: list notes')
-})
+router.get('/api/notes', noteController.notesReadMany)
 
+router.post('/api/notes', noteController.notesCreateOne)
 
-
+router.put('/api/notes/:id', noteController.notesUpdateOne)
 
 module.exports = router
