@@ -1,0 +1,59 @@
+<script defer type="text/javascript">
+
+document.addEventListener("DOMContentLoaded", main)
+
+async function main() {
+  const quillEditor = new Quill('#editor', {
+    theme: 'snow'
+  })
+  const form = await document.querySelector('form')
+  form.addEventListener('submit', event => {
+    const date = new Date()
+    currentDateTime = `${date.toTimeString()} ${date.toDateString()}`
+    event.preventDefault()
+    makeFormData(form, currentDateTime, quillEditor)
+  })
+}
+
+
+async function makeFormData(form, dateTimeString, quillEditor) {
+
+  try {
+    const noteBody = await JSON.stringify(quillEditor.getContents())
+    let formObject = {
+      body: noteBody,
+      date: dateTimeString
+    }
+    const formData = new FormData(form)
+    for (let [key, val] of formData.entries()) {
+       formObject[key] = val
+     }
+    const formJSON = await JSON.stringify(formObject)
+    console.log('client side formJSON:', formJSON)
+    const response = await postData('', formJSON)
+    console.log('post response:', response)
+  }
+
+  catch(err) {
+    console.log(err)
+  }
+}
+
+// Example POST method implementation:
+async function postData(url = '', data) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: data
+    })
+    if (!response.ok) {
+      throw new Error(response)
+    }
+    return response
+
+    } catch(err) {
+    console.log(err)
+    }
+  }
+</script>
