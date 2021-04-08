@@ -114,7 +114,10 @@ async function makeFetchRequest (httpMethod, body) {
       throw new Error('Unhandled http method:', httpMethod)
     }
     if (!response.ok) {
+      console.error(response)
       throw new Error(response)
+    } else {
+      console.log(response)
     }
     return response
   } catch(err) {

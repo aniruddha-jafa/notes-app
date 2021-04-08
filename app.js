@@ -6,7 +6,6 @@ const express = require('express')
 const app = express()
 
 // config
-app.use(express.json())
 require('dotenv').config()
 
 // libraries
