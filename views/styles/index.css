@@ -15,6 +15,22 @@ button:disabled {
  color: grey;
 }
 
+.delete-button {
+  display: flex;
+  background-color: white;
+  border: 0.5px solid  grey;
+  color: grey;
+  text-align: center;
+  text-decoration: none;
+  /* border-radius: 100%; */
+  transition-duration: 0.1s;
+}
+
+.delete-button:hover {
+  background-color: #f44336;
+  color: white;
+}
+
 .top-navbar {
   border-bottom: 0.2px solid grey;
 }

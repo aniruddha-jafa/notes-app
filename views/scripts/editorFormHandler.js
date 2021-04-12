@@ -5,15 +5,12 @@ document.addEventListener("DOMContentLoaded", createEditor)
 async function createEditor () {
   try {
     globals.quillEditor = new Quill('#quill-editor', globals.editorOptions)
-    const form = document.querySelector('#note-form')
-    const newNoteButton = document.querySelector('#new-note-button')
-
     initialiseTrackChanges()
 
-    await form
-    form.addEventListener('submit', handleFormSubmit.bind({ form: form }))
+    // const form = await document.querySelector('#note-form')
+    // form.addEventListener('submit', handleFormSubmit.bind({ form: form }))
 
-    await newNoteButton
+    const newNoteButton = await document.querySelector('#new-note-button')
     newNoteButton.addEventListener('click', clearContents)
 
   } catch(err) {
@@ -23,10 +20,29 @@ async function createEditor () {
 
 
 function initialiseTrackChanges () {
+
   globals.quillEditor.on('text-change',
     watchForChange.bind( { contents: globals.quillEditor.getContents() } ))
+
+  const initialTitle = getTitle()
+  title.oninput = async () => {
+    const currentTitle = await getTitle()
+    await initialTitle
+    if (currentTitle !== initialTitle) {
+      console.log('change:', initialTitle, currentTitle)
+      enableSaveButton(true)
+   }
+  }
+
   enableSaveButton(false)
 }
+
+async function getTitle () {
+  const form = await document.querySelector('#note-form')
+  const title = new FormData(form).get('title')
+  return title
+}
+
 
 async function watchForChange (delta, oldDelta, source) {
   try {
@@ -46,9 +62,9 @@ async function watchForChange (delta, oldDelta, source) {
 
 async function handleFormSubmit () {
   try {
+      event.stopImmediatePropagation()
       event.preventDefault()
-       // access params in event listener through 'this'
-      const form = await this.form
+      const form = await document.querySelector('#note-form') //this.form // access params in event listener through 'this'
       const note = await formDataToJSON(form)
       let res
       if (globals.isNewNote === true) {
@@ -71,7 +87,7 @@ async function clearContents () {
     globals.currentNoteId = null
     await globals.quillEditor.setText('')
     document.querySelector('#title').value = ''
-    initialiseEditor()
+    initialiseTrackChanges()
   } catch(err) {
     console.error(err)
   }
@@ -85,10 +101,12 @@ async function formDataToJSON (form) {
     const currentDateTime = await date.toISOString()
     const formData = new FormData(form)
     const noteBody = await JSON.stringify(globals.quillEditor.getContents())
+    console.log('formadata before title:', formData)
+    const title =  await formData.get('title')
     let formObject = {
       body: noteBody,
       date: currentDateTime,
-      title: formData.get('title')
+      title: title
     }
     const formJSON = await JSON.stringify(formObject)
     return formJSON
@@ -97,12 +115,11 @@ async function formDataToJSON (form) {
   }
 }
 
-async function makeFetchRequest (httpMethod, body) {
+async function makeFetchRequest (httpMethod, body=null, id=null) {
   try {
     const headers = { 'Content-Type': 'application/json' }
     let response
     let url = globals.API_URL
-
     if (httpMethod === "GET") {
       response = await fetch(url, { method: httpMethod, headers: headers} )
     } else if (httpMethod === "POST") {
@@ -110,6 +127,9 @@ async function makeFetchRequest (httpMethod, body) {
     } else if (httpMethod === "PUT") {
       url += `/${globals.currentNoteId}`
       response = await fetch(url, { method: httpMethod, headers: headers, body: body })
+    } else if (httpMethod === "DELETE") {
+      url += `/${id}`
+      response = await fetch(url, { method: httpMethod, headers: headers })
     } else {
       throw new Error('Unhandled http method:', httpMethod)
     }
@@ -117,7 +137,7 @@ async function makeFetchRequest (httpMethod, body) {
       console.error(response)
       throw new Error(response)
     } else {
-      console.log(response)
+      console.log(response.message)
     }
     return response
   } catch(err) {
