@@ -38,7 +38,7 @@ exports.notesReadMany = async function (req, res, next) {
     const notes = await Note.find({}).skip(skip).limit(LIMIT)
     res.json(notes)
     console.log(`Sent ${notes.length} notes`)
-    //skip += LIMIT
+    skip += LIMIT
     next()
 
   } catch(err) {

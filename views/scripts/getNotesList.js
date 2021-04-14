@@ -1,10 +1,11 @@
 'use strict'
 
 document.addEventListener('DOMContentLoaded', makeNotesList)
+document.addEventListener('DOMContentLoaded', handleLoadMoreClick)
 
 async function makeNotesList() {
   try {
-    const notesList = document.querySelector('#notes-list-container')
+    const notesList = document.querySelector('#notes-list')
 
     let notes = await makeFetchRequest('GET')
     notes =  await notes.json()
@@ -15,6 +16,8 @@ async function makeNotesList() {
     Promise.all(noteItems)
     .then(res => { notesList.appendChild(placeholder) })
     .catch(err => { throw new Error(err) })
+
+
 
   } catch(err) {
     console.error(err)
@@ -98,3 +101,8 @@ async function enableSaveButton(toEnable) {
       console.error(err)
     }
   }
+
+async function handleLoadMoreClick() {
+  document.querySelector('#load-more-button')
+  .addEventListener('click', makeNotesList)
+}
