@@ -1,3 +1,4 @@
+/* Page layout */
 
 * {
    box-sizing: border-box;
@@ -15,38 +16,41 @@ button:disabled {
  color: grey;
 }
 
-.delete-button {
-  display: flex;
-  background-color: white;
-  border: 0.5px solid  grey;
-  color: grey;
-  text-align: center;
-  text-decoration: none;
-  /* border-radius: 100%; */
-  transition-duration: 0.1s;
-}
-
-.delete-button:hover {
-  background-color: #f44336;
-  color: white;
-}
 
 .top-navbar {
   border-bottom: 0.2px solid grey;
 }
 
- .flex-container {
+ .flex-row {
    display: flex;
    flex-direction: row;
    width: 100%;
  }
 
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
 
- .notes-list-container {
-    color: #000;
-    width: 20%;
-    display: flex;
-    flex-direction: column;
+.center {
+  align-items: center;
+}
+
+/* Notes list */
+ #notes-list-container {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;
+  /* align-items: center; */
+  align-items: stretch;
+  color: #000;
+
+  overflow-y: scroll;
+  border: 1px solid red;
+  max-height: 80vh; */
+
+  width: 20vw;
  }
 
  .notes-list-item {
@@ -62,13 +66,35 @@ button:disabled {
    cursor: pointer;
  }
 
+ .delete-button {
+   display: flex;
+   background-color: white;
+   border: 0.5px solid  grey;
+   color: grey;
+   text-align: center;
+   text-decoration: none;
+   /* border-radius: 100%; */
+   transition-duration: 0.1s;
+ }
+
+ .delete-button:hover {
+   background-color: #f44336;
+   color: white;
+ }
+
+#load-more-button {
+  margin: 0.5rem;
+  width: 5rem;
+  align-self: flex-ends;
+}
+
+/* Editor & buttons */
+
 #note-form {
   width: 100%;
   padding: 0.5rem;
-}
-
-form > .flex-item {
-  padding: 0.5rem 0 0.5rem 0.5rem;
+  height: 80vh;
+  border: 1px solid blue;
 }
 
 #editor-container {
