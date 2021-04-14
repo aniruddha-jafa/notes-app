@@ -2,9 +2,13 @@
 
 // libraries
 const jsonParser = require('express').json()
+const ejs = require('ejs')
+const path = require('path')
 
 // modules
 const Note = require('../models/note')
+
+const noteScriptsPath = path.join(__dirname, '..', '/views', '/scripts')
 
 exports.getHome = async function (req, res, next) {
   try {
@@ -31,13 +35,13 @@ exports.notesReadOne = async function (req, res, next) {
 
 
 // READ all notes
-let LIMIT = 5, skip = 0
+const LIMIT = 5
+let skip = 0
 exports.notesReadMany = async function (req, res, next) {
   try {
     console.log('Received GET request for multiple notes')
     const notes = await Note.find({}).skip(skip).limit(LIMIT)
     res.json(notes)
-    console.log(`Sent ${notes.length} notes`)
     skip += LIMIT
     next()
 
@@ -68,7 +72,7 @@ exports.notesUpdateOne = [
   async function(req, res, next) {
   try {
     let formData = await req.body
-    console.log('PUT request for note:', formData)
+    console.log('PUT request for note:', req.params.id, formData)
     formData.body = await JSON.parse(formData.body)
     await Note.findByIdAndUpdate(req.params.id, formData)
     res.json({ message: 'updated' })

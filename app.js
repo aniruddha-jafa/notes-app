@@ -7,7 +7,6 @@ const app = express()
 
 // libraries
 const path = require('path')
-const hbs = require('hbs')
 const ejs = require('ejs')
 
 // module imports
