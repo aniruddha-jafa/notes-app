@@ -17,15 +17,12 @@ async function makeNotesList() {
     .then(res => { notesList.appendChild(placeholder) })
     .catch(err => { throw new Error(err) })
 
-
-
   } catch(err) {
     console.error(err)
   }
 }
 
-// async so that it returns a promise, can be used with Promise.all
-// in makeNoteItems
+// returns a promise -> can be used with Promise.allin makeNoteItems
 async function makeNoteItem (note, placeholder) {
   try {
     const date = new Date(note.date)
@@ -36,43 +33,40 @@ async function makeNoteItem (note, placeholder) {
 
     // delete button
     const deleteButton = makeDeleteButton()
-    deleteButton.addEventListener('click', handleDeleteClick.bind({ _id: note._id}))
+    deleteButton.addEventListener('click', event => handleDeleteClick(note._id))
 
     noteItem.appendChild(deleteButton)
 
     // save item
     const form = await document.querySelector('#note-form')
-    form.addEventListener('submit', handleFormSubmit.bind({ _id: note._id }))
+
+    form.addEventListener('submit', event => handleFormSubmit(note))
 
     // render on click
-    noteItem.addEventListener("click", handleNoteItemClick.bind(note))
+    noteItem.addEventListener('click', event => handleNoteItemClick(note))
 
     placeholder.appendChild(noteItem)
+  } catch(err) {
+    throw new Error(err)
+  }
+}
+
+async function handleNoteItemClick (note) {
+  try {
+    globals.isNewNote = false
+
+    const initialContents = note.body
+    const title = document.querySelector('#title')
+    await initialContents, title
+
+    await globals.quillEditor.setContents(initialContents)
+    title.value = note.title
+    initialiseTrackChanges(note)
 
   } catch(err) {
     throw new Error(err)
   }
-
 }
-
-
-async function handleNoteItemClick() {
-    try {
-      globals.isNewNote = false
-      globals.currentNoteId = this._id // access params in event listener through 'this'
-
-      const title = document.querySelector('#title')
-      await title
-      title.value = this.title
-
-      const initialContents = this.body
-      await globals.quillEditor.setContents(initialContents)
-      initialiseTrackChanges()
-
-    } catch(err) {
-      throw new Error(err)
-    }
-  }
 
 function makeDeleteButton () {
       const deleteButton = document.createElement('button')
@@ -81,19 +75,20 @@ function makeDeleteButton () {
       return deleteButton
   }
 
-async function handleDeleteClick () {
+
+async function handleDeleteClick (noteId) {
   try {
     event.stopPropagation()
-    const noteId = await this._id
     const res = makeFetchRequest('DELETE', null, noteId)
     event.target.parentNode.style.display = "none"
     clearContents()
   } catch (err) {
     console.error(err)
   }
+
 }
 
-async function enableSaveButton(toEnable) {
+async function enableSaveButton (toEnable) {
     try {
       const button = await document.querySelector('#save-button')
       button.disabled = !toEnable
@@ -102,7 +97,7 @@ async function enableSaveButton(toEnable) {
     }
   }
 
-async function handleLoadMoreClick() {
+async function handleLoadMoreClick () {
   document.querySelector('#load-more-button')
   .addEventListener('click', makeNotesList)
 }

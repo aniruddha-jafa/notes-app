@@ -5,13 +5,10 @@ document.addEventListener("DOMContentLoaded", createEditor)
 async function createEditor () {
   try {
     globals.quillEditor = new Quill('#quill-editor', globals.editorOptions)
-    initialiseTrackChanges()
-
-    // const form = await document.querySelector('#note-form')
-    // form.addEventListener('submit', handleFormSubmit.bind({ form: form }))
+    initialiseTrackChanges(globals.EMPTY_NOTE)
 
     const newNoteButton = await document.querySelector('#new-note-button')
-    newNoteButton.addEventListener('click', clearContents)
+    newNoteButton.addEventListener('click', event => clearContents())
 
   } catch(err) {
     console.error(err)
@@ -19,23 +16,21 @@ async function createEditor () {
 }
 
 
-function initialiseTrackChanges () {
+async function initialiseTrackChanges (note) {
+
+  const initialContents = await JSON.stringify(note.body)
 
   globals.quillEditor.on('text-change',
-    watchForChange.bind( { contents: globals.quillEditor.getContents() } ))
+  (delta, oldDelta, source) => watchEditorForChanges(source, initialContents))
 
-  const initialTitle = getTitle()
-  title.oninput = async () => {
-    const currentTitle = await getTitle()
-    await initialTitle
-    if (currentTitle !== initialTitle) {
-      console.log('change:', initialTitle, currentTitle)
-      enableSaveButton(true)
-   }
-  }
+  const title = document.querySelector('#title')
+  const initialTitle = note.title
+  await title, initialTitle
 
+  title.addEventListener('input', () => watchTitleForChanges(initialTitle))
   enableSaveButton(false)
 }
+
 
 async function getTitle () {
   const form = await document.querySelector('#note-form')
@@ -43,55 +38,64 @@ async function getTitle () {
   return title
 }
 
-
-async function watchForChange (delta, oldDelta, source) {
+async function watchTitleForChanges (initialTitle) {
   try {
-    const initialContents = JSON.stringify(this.contents)
-    const currentContents = JSON.stringify(globals.quillEditor.getContents())
-    await initialContents, currentContents
-    if (source === 'user' && currentContents !== initialContents) {
+    const currentTitle = await getTitle()
+    if (currentTitle !== initialTitle) {
       enableSaveButton(true)
     } else {
       enableSaveButton(false)
     }
-  } catch(err) {
-    throw new Error(err)
+  } catch (err) {
+    console.error(err)
   }
 }
 
-
-async function handleFormSubmit () {
-  try {
-      event.stopImmediatePropagation()
-      event.preventDefault()
-      const form = await document.querySelector('#note-form') //this.form // access params in event listener through 'this'
-      const note = await formDataToJSON(form)
-      let res
-      if (globals.isNewNote === true) {
-        res = await makeFetchRequest('POST', note)  // create new note, await server response
-        res = await res.json()
-        globals.currentNoteId = res._id  // unique id set by mongoDB
-        globals.isNewNote = false
+async function watchEditorForChanges (source, initialContents) {
+    try {
+      const currentContents = JSON.stringify(globals.quillEditor.getContents())
+      await initialContents, currentContents
+      if (source === 'user' && currentContents !== initialContents) {
+        enableSaveButton(true)
       } else {
-        res = await makeFetchRequest('PUT', note)  // update existing note
+        enableSaveButton(false)
       }
-      initialiseTrackChanges()
     } catch(err) {
       throw new Error(err)
     }
 }
 
+async function handleFormSubmit (note) {
+  try {
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      const form = await document.querySelector('#note-form')
+      const formData = await formDataToJSON(form)
+      let res
+      if (globals.isNewNote === true) {
+        res = await makeFetchRequest('POST', formData)  // create new note, await server response
+        res = await res.json()
+        note._id = res._id // unique id set by mongoDB on first create
+        globals.isNewNote = false
+      } else {
+        res = await makeFetchRequest('PUT', formData, note._id)  // update existing note
+      }
+      initialiseTrackChanges(note)
+    } catch(err) {
+      throw new Error(err)
+    }
+
+}
+
 async function clearContents () {
   try {
     globals.isNewNote = true
-    globals.currentNoteId = null
     await globals.quillEditor.setText('')
     document.querySelector('#title').value = ''
-    initialiseTrackChanges()
+    initialiseTrackChanges(globals.EMPTY_NOTE)
   } catch(err) {
     console.error(err)
   }
-
 }
 
 
@@ -101,7 +105,6 @@ async function formDataToJSON (form) {
     const currentDateTime = await date.toISOString()
     const formData = new FormData(form)
     const noteBody = await JSON.stringify(globals.quillEditor.getContents())
-    console.log('formadata before title:', formData)
     const title =  await formData.get('title')
     let formObject = {
       body: noteBody,
@@ -119,16 +122,16 @@ async function makeFetchRequest (httpMethod, body=null, id=null) {
   try {
     const headers = { 'Content-Type': 'application/json' }
     let response
-    let url = globals.API_URL
+    let url = globals.API_ROOT_URL
     if (httpMethod === "GET") {
       response = await fetch(url, { method: httpMethod, headers: headers} )
     } else if (httpMethod === "POST") {
       response = await fetch(url, { method: httpMethod, headers: headers, body: body } )
     } else if (httpMethod === "PUT") {
-      url += `/${globals.currentNoteId}`
+      url += await `/${id}`
       response = await fetch(url, { method: httpMethod, headers: headers, body: body })
     } else if (httpMethod === "DELETE") {
-      url += `/${id}`
+      url += await `/${id}`
       response = await fetch(url, { method: httpMethod, headers: headers })
     } else {
       throw new Error('Unhandled http method:', httpMethod)
@@ -136,8 +139,8 @@ async function makeFetchRequest (httpMethod, body=null, id=null) {
     if (!response.ok) {
       console.error(response)
       throw new Error(response)
-    } else {
-      console.log(response.message)
+    } else if (response.message) {
+      console.log('Server message:', response.message)
     }
     return response
   } catch(err) {

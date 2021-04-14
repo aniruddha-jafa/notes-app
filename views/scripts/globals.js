@@ -3,8 +3,12 @@
 // intended to be in shared scope for all scripts
 const globals = {
   isNewNote: true,
-  API_URL: '/api/notes',
-  currentNoteId: null,
+  API_ROOT_URL: '/api/notes',
+  EMPTY_NOTE: {
+    body: {"ops":[{"insert":"\n"}]},
+    date: '',
+    title: ''
+  },
   quillEditorSelector: '#quill-editor',
   editorContainerSelector: '#editor-container',
   quillEditor: null,
