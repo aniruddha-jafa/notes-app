@@ -8,22 +8,22 @@ const app = express()
 // libraries
 const path = require('path')
 const hbs = require('hbs')
+const ejs = require('ejs')
 
 // module imports
-const notesRouter = require('./routes/noteRoutes')
+const notesRouter = require('./src/routes/noteRoutes')
 
 // paths
-const viewsPath = path.join(__dirname, '/views')
-const partialsPath = path.join(viewsPath, '/partials')
+const viewsPath = path.join(__dirname, '/src/views')
 
 // config
 require('dotenv').config()
-app.set('view engine', 'hbs')
 app.set('strict routing', true)
+app.set('views', viewsPath)
 
 // view engine & static assets
-app.use(express.static(viewsPath))
-hbs.registerPartials(partialsPath)
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
 
 // routes
 app.use('/', notesRouter)
