@@ -52,10 +52,10 @@ exports.notesCreateOne = [
   async function (req, res, next)  {
    try {
      let formData = await req.body
-     console.log('POST request for formData:', formData)
      let note = new Note(formData)
      note = await note.save()
      res.json({ _id: note._id })
+     console.log('POST request for formData:', formData)
      next()
    } catch(err) {
    next(err)
