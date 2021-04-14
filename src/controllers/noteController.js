@@ -2,13 +2,25 @@
 
 // libraries
 const jsonParser = require('express').json()
+const ejs = require('ejs')
+const path = require('path')
 
 // modules
 const Note = require('../models/note')
 
+
+const noteScriptsPath = path.join(__dirname, '..', '/views', '/scripts')
+
+
 exports.getHome = async function (req, res, next) {
   try {
-      res.render('home')
+      //res.render('helloworld')
+      console.log('noteScriptsPath', noteScriptsPath)
+
+      res.render('home', {
+                      scriptsPath: noteScriptsPath,
+                      globalsPath: path.join(noteScriptsPath, '/globals.js')
+                    })
     } catch(err) {
       next(err)
     }
