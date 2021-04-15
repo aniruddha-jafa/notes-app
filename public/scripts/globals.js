@@ -7,15 +7,9 @@ const globals = {
     body: {"ops":[{"insert":"\n"}]},
     date: '',
     title: '',
-    isNewNote: true
+    _id: null
   },
-  quillEditorSelector: '#quill-editor',
-  editorContainerSelector: '#editor-container',
   quillEditor: null,
-  noteFormSelector: '#note-form',
-  notesListContainerSelector: '#notes-list-container',
-  newNoteButtonSelector: '#new-note-button',
-  saveButtonSelector: '#save-button',
   editorOptions: {
     theme: 'snow',
     modules: {
