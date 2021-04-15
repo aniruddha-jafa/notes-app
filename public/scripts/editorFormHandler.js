@@ -1,20 +1,21 @@
 'use strict'
 
-document.addEventListener("DOMContentLoaded", createEditor)
+document.addEventListener('DOMContentLoaded', event => createEditor())
 
 async function createEditor () {
   try {
+    // editor
     globals.quillEditor = new Quill('#quill-editor', globals.editorOptions)
-
     clearContents()
     initialiseTrackChanges(globals.EMPTY_NOTE)
 
+    // form submit handler
     const form = document.querySelector('#note-form')
-    form.addEventListener('submit', event => handleFormSubmit(globals.EMPTY_NOTE))
+    form.addEventListener('submit', event => handleFormSubmit(event, globals.EMPTY_NOTE._id))
 
+    // new note
     const newNoteButton = await document.querySelector('#new-note-button')
     newNoteButton.addEventListener('click', event => clearContents())
-
   } catch(err) {
     console.error(err)
   }
@@ -28,10 +29,10 @@ async function initialiseTrackChanges (note) {
     const initialTitle = note.title
     await title, initialTitle, initialContents
 
+    // watch for changes
     globals.quillEditor.on('text-change',
     (delta, oldDelta, source) => watchEditorForChanges(source, initialContents))
     title.addEventListener('input', () => watchTitleForChanges(initialTitle))
-
     enableSaveButton(false)
   } catch(err) {
     console.error(err)
@@ -60,8 +61,7 @@ async function watchTitleForChanges (initialTitle) {
 
 async function watchEditorForChanges (source, initialContents) {
     try {
-      const currentContents = JSON.stringify(globals.quillEditor.getContents())
-      await initialContents, currentContents
+      const currentContents = await JSON.stringify(globals.quillEditor.getContents())
       if (source === 'user' && currentContents !== initialContents) {
         enableSaveButton(true)
       } else {
@@ -72,36 +72,28 @@ async function watchEditorForChanges (source, initialContents) {
     }
 }
 
-async function handleFormSubmit (note) {
+async function handleFormSubmit (event, noteId=null) {
   try {
       event.stopImmediatePropagation()
       event.preventDefault()
       const form = await document.querySelector('#note-form')
       const formData = await formDataToJSON(form)
-      let res
-      if (note.isNewNote) {
-        res = await makeFetchRequest('POST', formData)  // create new note, await server response
+      let note = JSON.parse(formData)
+      if (noteId === null) {
+        let res = await makeFetchRequest('POST', formData)  // create new note, await server response
         res = await res.json()
-        const newNote = JSON.parse(formData)
-        newNote._id = res._id // unique id set by mongoDB on first create
-        globals.isNewNote = false
-        initialiseTrackChanges(newNote)
-      } else if (note.isNewNote === false ) {  // explicitly check to avoid falsy values like undefined
-        res = await makeFetchRequest('PUT', formData, note._id)  // update existing note
-        initialiseTrackChanges(note)
+        note._id = res._id // unique id set by mongoDB on first create
       } else {
-        throw new Error('Unexpected value of property isNewNote')
+        let res = await makeFetchRequest('PUT', formData, noteId)  // update existing note
       }
-
+      initialiseTrackChanges(note)
     } catch(err) {
       throw new Error(err)
     }
-
 }
 
 async function clearContents () {
   try {
-    globals.isNewNote = true
     await globals.quillEditor.setText('')
     document.querySelector('#title').value = ''
     initialiseTrackChanges(globals.EMPTY_NOTE)
@@ -110,16 +102,15 @@ async function clearContents () {
   }
 }
 
-
 async function formDataToJSON (form) {
   try {
     const date = new Date()
     const currentDateTime = await date.toISOString()
     const formData = new FormData(form)
-    const noteBody = await JSON.stringify(globals.quillEditor.getContents())
+    const editorContents = await JSON.stringify(globals.quillEditor.getContents())
     const title =  await formData.get('title')
     let formObject = {
-      body: noteBody,
+      body: editorContents,
       date: currentDateTime,
       title: title
     }
