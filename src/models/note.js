@@ -3,12 +3,6 @@
 require('dotenv').config()
 
 const mongoose = require('mongoose')
-mongoose.set('useNewUrlParser', true)
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-mongoose.set('useUnifiedTopology', true)
-
-const notesDbConnection = mongoose.createConnection(process.env.MONGODB_NOTES_URI)
 
 const NoteSchema = new mongoose.Schema({
   title: {
@@ -28,5 +22,4 @@ const NoteSchema = new mongoose.Schema({
         }
 })
 
-
-module.exports = notesDbConnection.model('Note', NoteSchema)
+module.exports = mongoose.model('Note', NoteSchema)

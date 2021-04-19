@@ -11,6 +11,7 @@ const ejs = require('ejs')
 
 // module imports
 const notesRouter = require('./src/routes/noteRoutes')
+const { connectToNotesDb } = require('./src/dbConnection')
 
 // paths
 const viewsPath = path.join(__dirname, '/src/views')
@@ -28,6 +29,12 @@ app.use(express.static('public'))
 app.use('/', notesRouter)
 
 const port = process.env.PORT || 8000
-app.listen(port, () => {
-  console.log(`Listening at port ${port}...`)
+
+app.listen(port, async () => {
+  try {
+    await connectToNotesDb()
+    console.log(`Listening at port ${port}...`)
+  } catch(err) {
+    console.error(err)
+  }
 })
