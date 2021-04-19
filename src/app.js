@@ -1,4 +1,3 @@
-
 'use strict'
 
 // app
@@ -10,11 +9,11 @@ const path = require('path')
 const ejs = require('ejs')
 
 // module imports
-const notesRouter = require('./src/routes/noteRoutes')
-const { connectToNotesDb } = require('./src/dbConnection')
+const notesRouter = require('./routes/noteRoutes')
+const { connectToNotesDb } = require('./dbConnection')
 
 // paths
-const viewsPath = path.join(__dirname, '/src/views')
+const viewsPath = path.join(__dirname, '/views')
 
 // config
 require('dotenv').config()
@@ -28,13 +27,18 @@ app.use(express.static('public'))
 // routes
 app.use('/', notesRouter)
 
-const port = process.env.PORT || 8000
-
-app.listen(port, async () => {
+async function start () {
   try {
+    const port = process.env.PORT || 8000
     await connectToNotesDb()
-    console.log(`Listening at port ${port}...`)
+    app.listen(port, () => {
+        console.log(`Listening at port ${port}...`)
+    })
   } catch(err) {
-    console.error(err)
+      console.error(err)
   }
-})
+}
+
+// exports
+exports.start = start
+exports.app = app

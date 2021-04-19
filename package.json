@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js --ext js,ejs,css,scss,json",
+    "start": "nodemon ./src/server.js --ext js,ejs,css,scss,json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
