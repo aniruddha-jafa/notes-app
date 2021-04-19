@@ -7,14 +7,13 @@ const noteController = require('../controllers/noteController')
 
 router.get('/notes', noteController.getHome)
 
-router.get('api/notes/:id', noteController.notesReadOne)
+router.route('/api/notes')
+  .get(noteController.notesReadMany)
+  .post(noteController.notesCreateOne)
 
-router.get('/api/notes', noteController.notesReadMany)
-
-router.post('/api/notes', noteController.notesCreateOne)
-
-router.put('/api/notes/:id', noteController.notesUpdateOne)
-
-router.delete('/api/notes/:id', noteController.notesDeleteOne)
+router.route('/api/notes/:id')
+  .get(noteController.notesReadOne)
+  .put(noteController.notesUpdateOne)
+  .delete(noteController.notesDeleteOne)
 
 module.exports = router
