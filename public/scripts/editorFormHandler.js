@@ -1,6 +1,6 @@
 'use strict'
 
-document.addEventListener('DOMContentLoaded', event => createEditor())
+document.addEventListener('DOMContentLoaded', createEditor)
 
 async function createEditor () {
   try {
@@ -11,11 +11,14 @@ async function createEditor () {
 
     // form submit handler
     const form = document.querySelector('#note-form')
-    form.addEventListener('submit', event => handleFormSubmit(event, globals.EMPTY_NOTE._id))
 
     // new note
     const newNoteButton = await document.querySelector('#new-note-button')
     newNoteButton.addEventListener('click', event => clearContents())
+
+    // new changes
+    form.params = { id: globals.EMPTY_NOTE._id }
+    form.addEventListener('submit', handleFormSubmit)
   } catch(err) {
     console.error(err)
   }
@@ -72,19 +75,20 @@ async function watchEditorForChanges (source, initialContents) {
     }
 }
 
-async function handleFormSubmit (event, noteId=null) {
+async function handleFormSubmit (noteId=null) {
   try {
-      event.stopImmediatePropagation()
       event.preventDefault()
+      const params = event.currentTarget.customParams
+      const noteId = params.id
       const form = await document.querySelector('#note-form')
       const formData = await formDataToJSON(form)
-      let note = JSON.parse(formData)
-      if (noteId === null) {
+      const note = JSON.parse(formData)
+      if (!noteId) {
         let res = await makeFetchRequest('POST', formData)  // create new note, await server response
         res = await res.json()
         note._id = res._id // unique id set by mongoDB on first create
       } else {
-        let res = await makeFetchRequest('PUT', formData, noteId)  // update existing note
+        const res = await makeFetchRequest('PUT', formData, noteId)  // update existing note
       }
       initialiseTrackChanges(note)
     } catch(err) {
@@ -121,7 +125,7 @@ async function formDataToJSON (form) {
   }
 }
 
-async function makeFetchRequest (httpMethod, body=null, id=null) {
+async function makeFetchRequest (httpMethod, body, id) {
   try {
     const headers = { 'Content-Type': 'application/json' }
     let response

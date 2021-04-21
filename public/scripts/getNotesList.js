@@ -1,7 +1,7 @@
 'use strict'
 
-document.addEventListener('DOMContentLoaded', event => makeNotesList())
-document.addEventListener('DOMContentLoaded', event => handleLoadMoreClick())
+document.addEventListener('DOMContentLoaded', makeNotesList)
+document.addEventListener('DOMContentLoaded', handleLoadMoreClick)
 
 
 
@@ -34,6 +34,7 @@ async function makeNoteItem (note, parentNode) {
     // create text content
     noteItem.classList.add('notes-list-item')
     noteItem.textContent =  await `${note.title}, ${date.toDateString()}`
+    noteItem.params = { id: note._id }
 
     // add delete button
     const deleteButton = makeDeleteButton()
@@ -42,8 +43,6 @@ async function makeNoteItem (note, parentNode) {
 
     // render on click
     noteItem.addEventListener('click', event => handleNoteItemClick(event, note))
-
-    console.log(`Finished creating note item ${noteItem}; appending to parent ${parentNode}`)
     parentNode.appendChild(noteItem)
   } catch(err) {
     throw new Error(err)
@@ -54,15 +53,17 @@ async function handleNoteItemClick (event, note) {
   try {
     const initialContents = note.body
     const title = document.querySelector('#title')
-    const form = await document.querySelector('#note-form')
+    const form = document.querySelector('#note-form')
 
     await initialContents, title
     await globals.quillEditor.setContents(initialContents)
     title.value = note.title
-
-    await form
-    form.addEventListener('submit', event => handleFormSubmit(event, note._id))
     initialiseTrackChanges(note)
+
+    await form.removeEventListener('submit', handleFormSubmit)
+    form.addEventListener('submit', handleFormSubmit)
+    form.customParams = { id: note._id}
+
   } catch(err) {
     throw new Error(err)
   }

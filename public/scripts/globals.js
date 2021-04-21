@@ -7,7 +7,7 @@ const globals = {
     body: {"ops":[{"insert":"\n"}]},
     date: '',
     title: '',
-    _id: null
+    _id: ''
   },
   quillEditor: null,
   editorOptions: {
