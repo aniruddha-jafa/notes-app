@@ -34,7 +34,7 @@ async function makeNoteItem (note, parentNode) {
     // create text content
     noteItem.classList.add('notes-list-item')
     noteItem.textContent =  await `${note.title}, ${date.toDateString()}`
-    noteItem.params = { id: note._id }
+    noteItem.params = note
 
     // add delete button
     const deleteButton = makeDeleteButton()
@@ -44,6 +44,7 @@ async function makeNoteItem (note, parentNode) {
     // render on click
     noteItem.addEventListener('click', event => handleNoteItemClick(event, note))
     parentNode.appendChild(noteItem)
+    return noteItem
   } catch(err) {
     throw new Error(err)
   }
@@ -51,6 +52,7 @@ async function makeNoteItem (note, parentNode) {
 
 async function handleNoteItemClick (event, note) {
   try {
+    console.log('Setting initial contents:', note.body)
     const initialContents = note.body
     const title = document.querySelector('#title')
     const form = document.querySelector('#note-form')
@@ -62,7 +64,9 @@ async function handleNoteItemClick (event, note) {
 
     await form.removeEventListener('submit', handleFormSubmit)
     form.addEventListener('submit', handleFormSubmit)
-    form.customParams = { id: note._id}
+    //form.customParams = { id: note._id }
+
+    globals.currentNoteItem = event.target
 
   } catch(err) {
     throw new Error(err)
@@ -80,7 +84,9 @@ async function handleDeleteClick (event, noteId) {
   try {
     event.stopPropagation()
     const res = await makeFetchRequest('DELETE', null, noteId)
-    event.target.parentNode.style.display = "none"
+    const noteItem = await event.target.parentNode
+    //noteItem.style.display = "none"
+    noteItem.remove()
     clearContents()
   } catch (err) {
     console.error(err)

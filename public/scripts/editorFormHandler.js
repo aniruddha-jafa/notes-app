@@ -6,6 +6,7 @@ async function createEditor () {
   try {
     // editor
     globals.quillEditor = new Quill('#quill-editor', globals.editorOptions)
+    globals.currentNoteItem.params = globals.EMPTY_NOTE
     clearContents()
     initialiseTrackChanges(globals.EMPTY_NOTE)
 
@@ -16,8 +17,6 @@ async function createEditor () {
     const newNoteButton = await document.querySelector('#new-note-button')
     newNoteButton.addEventListener('click', event => clearContents())
 
-    // new changes
-    form.params = { id: globals.EMPTY_NOTE._id }
     form.addEventListener('submit', handleFormSubmit)
   } catch(err) {
     console.error(err)
@@ -31,7 +30,6 @@ async function initialiseTrackChanges (note) {
     const title = document.querySelector('#title')
     const initialTitle = note.title
     await title, initialTitle, initialContents
-
     // watch for changes
     globals.quillEditor.on('text-change',
     (delta, oldDelta, source) => watchEditorForChanges(source, initialContents))
@@ -75,21 +73,29 @@ async function watchEditorForChanges (source, initialContents) {
     }
 }
 
-async function handleFormSubmit (noteId=null) {
+async function handleFormSubmit () {
   try {
       event.preventDefault()
-      const params = event.currentTarget.customParams
-      const noteId = params.id
       const form = await document.querySelector('#note-form')
       const formData = await formDataToJSON(form)
-      const note = JSON.parse(formData)
+      const noteId = globals.currentNoteItem.params._id
+      const note = await JSON.parse(formData)
+      note.body = await JSON.parse(note.body)  // note.body is a nested param
       if (!noteId) {
-        let res = await makeFetchRequest('POST', formData)  // create new note, await server response
+        // create new note, await server response
+        let res = await makeFetchRequest('POST', formData)
         res = await res.json()
         note._id = res._id // unique id set by mongoDB on first create
+
       } else {
-        const res = await makeFetchRequest('PUT', formData, noteId)  // update existing note
+        // update existing note
+        const res = makeFetchRequest('PUT', formData, noteId)
+        note._id = noteId
+        globals.currentNoteItem.style.display = "none"
       }
+      const notesList = await document.querySelector('#notes-list')
+      const noteItem = await makeNoteItem(note, notesList)
+      globals.currentNoteItem = noteItem
       initialiseTrackChanges(note)
     } catch(err) {
       throw new Error(err)
@@ -101,6 +107,8 @@ async function clearContents () {
     await globals.quillEditor.setText('')
     document.querySelector('#title').value = ''
     initialiseTrackChanges(globals.EMPTY_NOTE)
+    globals.currentNoteItem = {}
+    globals.currentNoteItem.params = globals.EMPTY_NOTE
   } catch(err) {
     console.error(err)
   }
@@ -125,7 +133,7 @@ async function formDataToJSON (form) {
   }
 }
 
-async function makeFetchRequest (httpMethod, body, id) {
+async function makeFetchRequest (httpMethod, body) {
   try {
     const headers = { 'Content-Type': 'application/json' }
     let response
@@ -135,10 +143,12 @@ async function makeFetchRequest (httpMethod, body, id) {
     } else if (httpMethod === "POST") {
       response = await fetch(url, { method: httpMethod, headers: headers, body: body } )
     } else if (httpMethod === "PUT") {
-      url += await `/${id}`
+      const noteId = await globals.currentNoteItem.params._id
+      url += `/${noteId}`
       response = await fetch(url, { method: httpMethod, headers: headers, body: body })
     } else if (httpMethod === "DELETE") {
-      url += await `/${id}`
+      const noteId = await globals.currentNoteItem.params._id
+      url += `/${noteId}`
       response = await fetch(url, { method: httpMethod, headers: headers })
     } else {
       throw new Error('Unhandled http method:', httpMethod)

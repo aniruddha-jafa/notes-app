@@ -10,6 +10,7 @@ const globals = {
     _id: ''
   },
   quillEditor: null,
+  currentNoteItem: {},
   editorOptions: {
     theme: 'snow',
     modules: {
