@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon ./src/server.js --ext js,ejs,css,scss,json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --runInBand --watch"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3"
   }
 }
