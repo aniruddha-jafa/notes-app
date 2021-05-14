@@ -10,7 +10,9 @@ const util = require('util')
 
 const { JSDOM } = require('jsdom')
 const { getByRole,
-        getByText } = require('@testing-library/dom')
+        getByText,
+        getByLabelText
+      } = require('@testing-library/dom')
 const { toBeInTheDocument } = require('@testing-library/jest-dom')
 
 const renderFile = util.promisify(ejs.renderFile)
@@ -39,8 +41,11 @@ describe('check if editor form controls are present', () => {
   test("Has 'Save' button", () => {
     expect(getByRole(noteForm, 'button', { name: 'Save' })).toBeInTheDocument()
   })
-  test("Has 'Title' field", () => {
+  test("Has 'Title' label", () => {
   expect(getByText(noteForm, 'Title')).toBeInTheDocument()
+  })
+  test("Has input field for title", () => {
+    expect(getByLabelText(noteForm, 'Title')).toBeInTheDocument()
   })
   test("Has 'New note' button", () => {
     expect(getByRole(noteForm, 'button', { name: 'New note' })).toBeInTheDocument()
