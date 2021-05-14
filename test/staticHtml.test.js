@@ -19,8 +19,8 @@ const {
 
 const renderFile = util.promisify(ejs.renderFile)
 
-let dom
 let staticHtml
+let staticHtmlBody
 
 beforeAll(async () => {
   try {
@@ -28,8 +28,8 @@ beforeAll(async () => {
     const data = {}
     const options = ''
     const html = await renderFile(filePath, data, options)
-    dom = new JSDOM(html)
-    staticHtml = await dom.window.document.body
+    staticHtml = new JSDOM(html)
+    staticHtmlBody = await staticHtml.window.document.body
     // console.info('DOM is:', dom.serialize())
   } catch (err) {
     console.error(err)
@@ -39,7 +39,7 @@ beforeAll(async () => {
 describe('check if editor form controls are present', () => {
   let noteForm
   beforeAll(async () => {
-    noteForm = await staticHtml.querySelector('form')
+    noteForm = await staticHtmlBody.querySelector('form')
   })
   test("Has 'Save' button", () => {
     const saveButton = getByRole(noteForm, 'button', { name: 'Save' })
@@ -55,4 +55,8 @@ describe('check if editor form controls are present', () => {
   test("Has 'New note' button", () => {
     expect(getByRole(noteForm, 'button', { name: 'New note' })).toBeInTheDocument()
   })
+})
+
+test("Page has a 'Load more' button", () => {
+  expect(getByRole(staticHtmlBody, 'button', { name: 'Load more' })).toBeInTheDocument()
 })
