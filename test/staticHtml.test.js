@@ -2,24 +2,25 @@
  * @jest-environment jsdom
  */
 
-const fs = require('fs')
 const ejs = require('ejs')
 const path = require('path')
-const assert = require('assert').strict
 const util = require('util')
 
 const { JSDOM } = require('jsdom')
-const { getByRole,
-        getByText,
-        getByLabelText
-      } = require('@testing-library/dom')
-const { toBeInTheDocument,
-        toHaveAttribute
-      } = require('@testing-library/jest-dom')
+const {
+  getByRole,
+  getByText,
+  getByLabelText,
+} = require('@testing-library/dom')
+const {
+  toBeInTheDocument,
+  toHaveAttribute,
+} = require('@testing-library/jest-dom')
 
 const renderFile = util.promisify(ejs.renderFile)
 
-let dom, staticHtml
+let dom
+let staticHtml
 
 beforeAll(async () => {
   try {
@@ -29,7 +30,7 @@ beforeAll(async () => {
     const html = await renderFile(filePath, data, options)
     dom = new JSDOM(html)
     staticHtml = await dom.window.document.body
-    //console.info('DOM is:', dom.serialize())
+    // console.info('DOM is:', dom.serialize())
   } catch (err) {
     console.error(err)
   }
@@ -37,7 +38,7 @@ beforeAll(async () => {
 
 describe('check if editor form controls are present', () => {
   let noteForm
-  beforeAll(async() => {
+  beforeAll(async () => {
     noteForm = await staticHtml.querySelector('form')
   })
   test("Has 'Save' button", () => {
@@ -46,9 +47,9 @@ describe('check if editor form controls are present', () => {
     expect(saveButton).toHaveAttribute('type', 'submit')
   })
   test("Has 'Title' label", () => {
-  expect(getByText(noteForm, 'Title')).toBeInTheDocument()
+    expect(getByText(noteForm, 'Title')).toBeInTheDocument()
   })
-  test("Has input field for title", () => {
+  test('Has input field for title', () => {
     expect(getByLabelText(noteForm, 'Title')).toBeInTheDocument()
   })
   test("Has 'New note' button", () => {

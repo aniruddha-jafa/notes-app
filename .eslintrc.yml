@@ -10,3 +10,4 @@ parserOptions:
 rules:
   semi: off
   arrow-parens: warn
+  no-undef: warn
