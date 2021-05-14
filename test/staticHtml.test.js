@@ -9,6 +9,10 @@ const assert = require('assert').strict
 const util = require('util')
 
 const { JSDOM } = require('jsdom')
+const { getByRole,
+        getByText } = require('@testing-library/dom')
+const { toBeInTheDocument } = require('@testing-library/jest-dom')
+
 const renderFile = util.promisify(ejs.renderFile)
 
 let dom, staticHtml
@@ -21,12 +25,18 @@ beforeAll(async () => {
     const html = await renderFile(filePath, data, options)
     dom = new JSDOM(html)
     staticHtml = await dom.window.document.body
-    console.info('DOM is:', dom.serialize())
+    //console.info('DOM is:', dom.serialize())
   } catch (err) {
     console.error(err)
   }
 })
 
-test('A failing test', () => {
-  expect(false).toBeTruthy()
+describe('check if form controls are present', () => {
+  let noteForm
+  beforeAll(async() => {
+    noteForm = await staticHtml.querySelector('form')
+  })
+  test("Has 'Save' button", () => {
+    expect(getByRole(noteForm, 'button', { name: 'Save' })).toBeInTheDocument()
+  })
 })
