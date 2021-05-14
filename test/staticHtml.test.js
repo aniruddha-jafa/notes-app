@@ -31,7 +31,7 @@ beforeAll(async () => {
   }
 })
 
-describe('check if form controls are present', () => {
+describe('check if editor form controls are present', () => {
   let noteForm
   beforeAll(async() => {
     noteForm = await staticHtml.querySelector('form')
@@ -41,5 +41,8 @@ describe('check if form controls are present', () => {
   })
   test("Has 'Title' field", () => {
   expect(getByText(noteForm, 'Title')).toBeInTheDocument()
+  })
+  test("Has 'New note' button", () => {
+    expect(getByRole(noteForm, 'button', { name: 'New note' })).toBeInTheDocument()
   })
 })
