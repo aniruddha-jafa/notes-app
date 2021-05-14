@@ -1,10 +1,10 @@
 const app = require('./app')
-const { connectToNotesDb } = require('./dbConnection')
+const dbConnection = require('./dbConnection')
 
 async function start() {
   try {
     const port = process.env.PORT || 8000
-    await connectToNotesDb()
+    await dbConnection()
     app.listen(port, () => {
       console.log(`Listening at port ${port}...`)
     })
