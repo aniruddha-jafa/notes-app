@@ -39,4 +39,7 @@ describe('check if form controls are present', () => {
   test("Has 'Save' button", () => {
     expect(getByRole(noteForm, 'button', { name: 'Save' })).toBeInTheDocument()
   })
+  test("Has 'Title' field", () => {
+  expect(getByText(noteForm, 'Title')).toBeInTheDocument()
+  })
 })
