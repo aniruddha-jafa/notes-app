@@ -27,11 +27,14 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "jest": "^26.6.3",
+    "jest-puppeteer": "^5.0.3",
     "jquery": "^3.6.0",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "puppeteer": "^9.1.1"
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "preset": "jest-puppeteer",
     "maxWorkers": "4",
     "testTimeout": 15000
   }
