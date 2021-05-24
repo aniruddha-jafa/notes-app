@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon src/server.js --ext js,ejs,css,scss,json",
-    "dev": "DEBUG=http,express:application* npm run start",
+    "dev": "DEBUG=http npm run start",
     "test": "jest --runInBand --watch"
   },
   "author": "",
