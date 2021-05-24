@@ -1,56 +1,51 @@
-'use strict'
-
 document.addEventListener('DOMContentLoaded', makeNotesList)
 document.addEventListener('DOMContentLoaded', handleLoadMoreClick)
 
-
-
-async function makeNotesList(event) {
+async function makeNotesList() {
   try {
     let notes = await makeFetchRequest('GET')
     const notesList = document.querySelector('#notes-list')
-    notes =  await notes.json()
+    notes = await notes.json()
 
     const placeholder = document.createDocumentFragment()
-    const noteItems = notes.map(note => makeNoteItem(note, placeholder))
+    const noteItems = notes.map((note) => makeNoteItem(note, placeholder))
 
     Promise.all(noteItems)
-    .then(res => notesList.appendChild(placeholder))
-    .catch(err => { throw new Error(err) })
+      .then((res) => notesList.appendChild(placeholder))
+      .catch((err) => { throw new Error(err) })
 
     handleLoadMoreClick()
-
-  } catch(err) {
+  } catch (err) {
     console.error(err)
   }
 }
 
 // returns a promise -> can be used with Promise.all in makeNoteItems
-async function makeNoteItem (note, parentNode) {
+async function makeNoteItem(note, parentNode) {
   try {
     const date = new Date(note.date)
 
     const noteItem = document.createElement('div')
     // create text content
     noteItem.classList.add('notes-list-item')
-    noteItem.textContent =  await `${note.title}, ${date.toDateString()}`
+    noteItem.textContent = await `${note.title}, ${date.toDateString()}`
     noteItem.params = note
 
     // add delete button
     const deleteButton = makeDeleteButton()
-    deleteButton.addEventListener('click', event => handleDeleteClick(event, note._id))
+    deleteButton.addEventListener('click', (event) => handleDeleteClick(note._id))
     noteItem.appendChild(deleteButton)
 
     // render on click
-    noteItem.addEventListener('click', event => handleNoteItemClick(event, note))
+    noteItem.addEventListener('click', (event) => handleNoteItemClick(note))
     parentNode.appendChild(noteItem)
     return noteItem
-  } catch(err) {
+  } catch (err) {
     throw new Error(err)
   }
 }
 
-async function handleNoteItemClick (event, note) {
+async function handleNoteItemClick(note) {
   try {
     console.log('Setting initial contents:', note.body)
     const initialContents = note.body
@@ -64,28 +59,25 @@ async function handleNoteItemClick (event, note) {
 
     await form.removeEventListener('submit', handleFormSubmit)
     form.addEventListener('submit', handleFormSubmit)
-    //form.customParams = { id: note._id }
 
     globals.currentNoteItem = event.target
-
-  } catch(err) {
+  } catch (err) {
     throw new Error(err)
   }
 }
 
-function makeDeleteButton () {
-    const deleteButton = document.createElement('button')
-    deleteButton.classList.add('delete-button')
-    deleteButton.textContent = 'X'
-    return deleteButton
-  }
+function makeDeleteButton() {
+  const deleteButton = document.createElement('button')
+  deleteButton.classList.add('delete-button')
+  deleteButton.textContent = 'X'
+  return deleteButton
+}
 
-async function handleDeleteClick (event, noteId) {
+async function handleDeleteClick(noteId) {
   try {
     event.stopPropagation()
-    const res = await makeFetchRequest('DELETE', null, noteId)
+    await makeFetchRequest('DELETE', null, noteId)
     const noteItem = await event.target.parentNode
-    //noteItem.style.display = "none"
     noteItem.remove()
     clearContents()
   } catch (err) {
@@ -93,16 +85,16 @@ async function handleDeleteClick (event, noteId) {
   }
 }
 
-async function enableSaveButton (toEnable) {
-    try {
-      const saveButton = document.querySelector('#save-button')
-      saveButton.disabled = !toEnable
-    } catch(err) {
-      console.error(err)
-    }
+async function enableSaveButton(toEnable) {
+  try {
+    const saveButton = document.querySelector('#save-button')
+    saveButton.disabled = !toEnable
+  } catch (err) {
+    console.error(err)
   }
+}
 
-async function handleLoadMoreClick () {
+async function handleLoadMoreClick() {
   const loadMoreButton = document.querySelector('#load-more-button')
-  loadMoreButton.addEventListener('click', event => makeNotesList(event))
+  loadMoreButton.addEventListener('click', (event) => makeNotesList())
 }

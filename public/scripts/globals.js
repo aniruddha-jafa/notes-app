@@ -1,5 +1,3 @@
-'use strict'
-
 // intended to be in shared scope for all scripts
 const globals = {
   API_ROOT_URL: '/api/notes',
@@ -7,7 +5,7 @@ const globals = {
     body: {"ops":[{"insert":"\n"}]},
     date: '',
     title: '',
-    _id: ''
+    _id: '',
   },
   quillEditor: null,
   currentNoteItem: {},
@@ -18,10 +16,10 @@ const globals = {
         [{ 'header': 1 }, { 'header': 2 }],
         ['bold', 'italic', 'underline', 'strike', { 'align': [] }],
         [{ 'list': 'bullet' }, {'list': 'ordered'}, 'blockquote'],
-        ['link', 'image', 'code-block'],
+        ['link', 'code-block'],
         [{ 'color': [] }, { 'background': [] }, { 'font': [] }],
       ]
     },
-    placeholder: 'Write here...'
+    placeholder: 'Write here...',
   }
 }
