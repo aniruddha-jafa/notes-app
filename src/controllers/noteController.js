@@ -3,7 +3,9 @@ const jsonParser = require('express').json()
 const debug = require('debug')('http')
 
 // modules
-const Note = require('../models/note')
+const noteSchema = require('../models/note')
+const notesDbConnection = require('../notesDbConnection')
+const Note = notesDbConnection.model('Note', noteSchema)
 
 exports.getHome = async function (req, res, next) {
   try {
