@@ -33,11 +33,11 @@ async function makeNoteItem(note, parentNode) {
 
     // add delete button
     const deleteButton = makeDeleteButton()
-    deleteButton.addEventListener('click', (event) => handleDeleteClick(note._id))
+    deleteButton.addEventListener('click', (event) => handleDeleteClick(event, note._id))
     noteItem.appendChild(deleteButton)
 
     // render on click
-    noteItem.addEventListener('click', (event) => handleNoteItemClick(note))
+    noteItem.addEventListener('click', (event) => handleNoteItemClick(event, note))
     parentNode.appendChild(noteItem)
     return noteItem
   } catch (err) {
@@ -45,7 +45,7 @@ async function makeNoteItem(note, parentNode) {
   }
 }
 
-async function handleNoteItemClick(note) {
+async function handleNoteItemClick(event, note) {
   try {
     console.log('Setting initial contents:', note.body)
     const initialContents = note.body
@@ -73,7 +73,7 @@ function makeDeleteButton() {
   return deleteButton
 }
 
-async function handleDeleteClick(noteId) {
+async function handleDeleteClick(event, noteId) {
   try {
     event.stopPropagation()
     await makeFetchRequest('DELETE', null, noteId)
