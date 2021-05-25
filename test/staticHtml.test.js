@@ -41,6 +41,9 @@ describe('check if editor form controls are present', () => {
   beforeAll(async () => {
     noteForm = await staticHtmlBody.querySelector('form')
   })
+  test('Note form exists', () => {
+    expect(noteForm).toBeInTheDocument()
+  })
   test("Has 'Save' button", () => {
     const saveButton = getByRole(noteForm, 'button', { name: 'Save' })
     expect(saveButton).toBeInTheDocument()
