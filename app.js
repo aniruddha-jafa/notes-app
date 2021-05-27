@@ -15,25 +15,24 @@ const partialsPath = path.join(viewsPath, '/partials')
 const scriptsPath = path.join(viewsPath, '/scripts')
 
 // module imports
-const homeRouter = require('./routes/homeRoutes')
-const notesRouter = require('./routes/noteRoutes')
+const notesRouter = require('./src/routes/noteRoutes')
 
-
-// view engine & static assets
-app.use(express.static(viewsPath))
-hbs.registerPartials(partialsPath)
-hbs.registerPartials(scriptsPath)
-app.set('view engine', 'hbs')
+// paths
+const viewsPath = path.join(__dirname, '/src/views')
 
 // config
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
+require('dotenv').config()
+app.set('strict routing', true)
+app.set('views', viewsPath)
+
+// view engine & static assets
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
 
 // routes
-app.use('/', homeRouter)
-app.use('/note', notesRouter)
+app.use('/', notesRouter)
 
-const portToUse = process.env.port || 3000
-app.listen(portToUse, () => {
-  console.log(`Listening at port ${portToUse}...`)
+const port = process.env.PORT || 8000
+app.listen(port, () => {
+  console.log(`Listening at port ${port}...`)
 })
