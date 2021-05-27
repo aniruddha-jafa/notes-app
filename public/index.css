@@ -1,0 +1,110 @@
+/* Page layout */
+
+* {
+   box-sizing: border-box;
+ }
+
+ html {
+   height: 100%;
+ }
+ body {
+   margin: 0;
+   height: 100%;
+ }
+
+button:disabled {
+ color: grey;
+}
+
+
+.top-navbar {
+  border-bottom: 0.2px solid grey;
+}
+
+ .flex-row {
+   display: flex;
+   flex-direction: row;
+   width: 100%;
+ }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  align-items: center;
+}
+
+/* Notes list */
+ #notes-list-container {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;
+  /* align-items: center; */
+  align-items: stretch;
+  color: #000;
+
+  overflow-y: scroll;
+  border: 1px solid red;
+  max-height: 80vh; */
+
+  width: 20vw;
+ }
+
+ .notes-list-item {
+   width: auto;
+   display: block;
+   padding: 8px 16px;
+   text-align: left;
+   border: 0.2px solid grey;
+ }
+
+  .notes-list-item:hover {
+   background-color: grey;
+   cursor: pointer;
+ }
+
+ .delete-button {
+   display: flex;
+   background-color: white;
+   border: 0.5px solid  grey;
+   color: grey;
+   text-align: center;
+   text-decoration: none;
+   /* border-radius: 100%; */
+   transition-duration: 0.1s;
+ }
+
+ .delete-button:hover {
+   background-color: #f44336;
+   color: white;
+ }
+
+#load-more-button {
+  margin: 0.5rem;
+  width: 5rem;
+  align-self: flex-ends;
+}
+
+/* Editor & buttons */
+
+#note-form {
+  width: 100%;
+  padding: 0.5rem;
+  height: 80vh;
+  border: 1px solid blue;
+}
+
+#editor-container {
+    display:block;
+    height: 70vh;
+    padding: 1rem;
+  }
+
+#quill-editor {
+  border: 0.2px solid #D3D3D3;
+  font-size: 0.8rem;
+  padding: 0.5rem;
+}
