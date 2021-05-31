@@ -97,7 +97,7 @@ button:disabled {
 #editor-container {
     display:block;
     height: 70vh;
-    padding: 1rem;
+    /* padding: 1rem; */
   }
 
 #quill-editor {
