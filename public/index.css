@@ -40,17 +40,14 @@ button:disabled {
  #notes-list-container {
   display: flex;
   flex-direction: column;
-
   justify-content: flex-start;
-  /* align-items: center; */
+
   align-items: stretch;
   color: #000;
-
   overflow-y: scroll;
-  /* border: 1px solid red; */
-  max-height: 80vh; */
 
-  width: 20vw;
+  max-height: 80vh;
+  width: 90%;
  }
 
  .notes-list-item {
