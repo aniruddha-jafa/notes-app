@@ -13,13 +13,13 @@ const globals = {
     theme: 'snow',
     modules: {
       toolbar: [
-        [{ 'header': 1 }, { 'header': 2 }],
-        ['bold', 'italic', 'underline', 'strike', { 'align': [] }],
-        [{ 'list': 'bullet' }, {'list': 'ordered'}, 'blockquote'],
+        [{ header: 1 }, { header: 2 }],
+        ['bold', 'italic', 'underline', 'strike', { align: [] }],
+        [{ list: 'bullet' }, { list: 'ordered' }, 'blockquote'],
         ['link', 'code-block'],
-        [{ 'color': [] }, { 'background': [] }, { 'font': [] }],
-      ]
+        [{ color: [] }, { background: [] }, { font: [] }],
+      ],
     },
     placeholder: 'Write here...',
-  }
+  },
 }
