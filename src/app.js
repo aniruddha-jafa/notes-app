@@ -13,6 +13,7 @@ const notesRouter = require('./routes/noteRoutes')
 const viewsPath = path.join(__dirname, 'views')
 const quilljsPath = path.join('node_modules', 'quill', 'dist')
 const bootstrapPath = path.join('node_modules', 'bootstrap', 'dist')
+const featherIconsPath = path.join('node_modules', 'feather-icons', 'dist')
 
 // config
 require('dotenv').config()
@@ -29,6 +30,7 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use('/vendor-assets/quill', express.static(quilljsPath))
 app.use('/vendor-assets/bootstrap', express.static(bootstrapPath))
+app.use('/vendor-assets/feather-icons', express.static(featherIconsPath))
 
 // routes
 app.use('/', notesRouter)
