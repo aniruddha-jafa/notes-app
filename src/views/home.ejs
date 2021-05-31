@@ -14,9 +14,15 @@
 </head>
 <body>
   <%- include('partials/top-navbar') %>
-  <div class="flex-row">
-    <%- include('partials/notelist') %>
-    <%- include('partials/editor') %>
+  <div class="container-fluid">
+    <div class="row d-flex flex-md-row-reverse">
+      <div class="col-lg-9 px-0 overflow-auto">
+        <%- include('partials/editor') %>
+      </div>
+      <div class='col-lg-3 overflow-auto'>
+        <%- include('partials/notelist') %>
+      </div>
+    </div>
   </div>
 </body>
 <script defer type="text/javascript" src='scripts/globals.js'></script>
