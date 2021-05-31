@@ -18,7 +18,9 @@ button:disabled {
 
 
 .top-navbar {
-  border-bottom: 0.2px solid grey;
+  display: flex;
+  justify-content: space-between;
+  color: white;
 }
 
  .flex-row {
