@@ -24,9 +24,18 @@ async function makeNoteItem(note, placeholder) {
   try {
     const date = new Date(note.date)
     const noteItem = document.createElement('div')
-    // text content
+
     noteItem.classList.add('notes-list-item')
-    noteItem.textContent = await `${note.title}, ${date.toDateString()}`
+    // noteItem.classList.add('card')
+
+    // text content
+    let displayContent = ''
+    if (note.title) {
+      displayContent = await `${note.title} | ${date.toDateString()}`
+    } else {
+      displayContent = await `Untitled | ${date.toDateString()}`
+    }
+    noteItem.textContent = displayContent
 
     // delete button
     const deleteButton = makeDeleteButton()
@@ -66,8 +75,13 @@ async function handleNoteItemClick(note) {
 
 function makeDeleteButton() {
   const deleteButton = document.createElement('button')
-  deleteButton.classList.add('delete-button')
-  deleteButton.textContent = 'X'
+  const classes = [
+    'btn-close',
+  ]
+  classes.forEach((item) => {
+    deleteButton.classList.add(item)
+  });
+  // deleteButton.textContent = 'X'
   return deleteButton
 }
 

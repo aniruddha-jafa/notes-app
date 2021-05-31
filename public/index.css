@@ -51,11 +51,11 @@ button:disabled {
  }
 
  .notes-list-item {
+   display: flex;
+   justify-content: space-between;
    width: auto;
-   display: block;
-   padding: 8px 16px;
-   text-align: left;
-   border: 0.2px solid grey;
+   border: 0.2px solid #d3d3d3;
+   padding: 1rem;
  }
 
   .notes-list-item:hover {
@@ -64,13 +64,15 @@ button:disabled {
  }
 
  .delete-button {
-   display: flex;
+   display: block;
    background-color: white;
    border: 0.5px solid  grey;
    color: grey;
    text-align: center;
    text-decoration: none;
-   /* border-radius: 100%; */
+   max-width: 2rem;
+   max-height: 2rem;
+   border-radius: 100%;
    transition-duration: 0.1s;
  }
 
