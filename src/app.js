@@ -12,6 +12,7 @@ const notesRouter = require('./routes/noteRoutes')
 // paths
 const viewsPath = path.join(__dirname, 'views')
 const quilljsPath = path.join('node_modules', 'quill', 'dist')
+const bootstrapPath = path.join('node_modules', 'bootstrap', 'dist')
 
 // config
 require('dotenv').config()
@@ -27,6 +28,7 @@ app.set('view engine', 'ejs')
 // static assets
 app.use(express.static('public'))
 app.use('/vendor-assets/quill', express.static(quilljsPath))
+app.use('/vendor-assets/bootstrap', express.static(bootstrapPath))
 
 // routes
 app.use('/', notesRouter)
