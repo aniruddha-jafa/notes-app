@@ -25,7 +25,7 @@ beforeAll(async () => {
     page = await browser.newPage()
     const notesHomeUrl = 'http://127.0.0.1:3000/notes'
     await page.goto(notesHomeUrl)
-    await page.DOMContentLoaded
+    await page.waitForSelector('#notes-list > div:nth-child(1)') // notesList item
     html = await page.content()
     html = new JSDOM(html)
     htmlBody = await html.window.document.body
