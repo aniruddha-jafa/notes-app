@@ -11,8 +11,14 @@
   <link rel='stylesheet' href='/vendor-assets/bootstrap/css/bootstrap.min.css'>
   <!-- Custom css -->
   <link rel="stylesheet" href="index.css">
+  <!-- External libraries -->
+  <!-- Bootstrap dependencies -->
+  <script type='text/javascript' src='/vendor-assets/bootstrap/js/bootstrap.bundle.min.js'></script>
+  <!-- Feather icons -->
+  <script type="text/javascript" src='/vendor-assets/feather-icons/feather.min.js'></script>
 </head>
 <body>
+
   <%- include('partials/top-navbar') %>
   <div class="container-fluid">
     <div class="row d-flex flex-md-row-reverse">
@@ -28,12 +34,8 @@
 <!-- Local scripts -->
 <script defer type="text/javascript" src='scripts/globals.js'></script>
 <script defer type="text/javascript" src='scripts/getNotesList.js'></script>
-
-<!-- External libraries -->
 <script defer type="text/javascript" src='scripts/editorFormHandler.js'></script>
-<!-- Bootstrap dependencies -->
-<script defer type='text/javascript' src='/vendor-assets/bootstrap/js/bootstrap.bundle.min.js'></script>
-<!-- Feather icons -->
-<script type="text/javascript" src='/vendor-assets/feather-icons/feather.js'></script>
-<script>feather.replace()</scripts>
+<script>
+  feather.replace();
+</script>
 </html>

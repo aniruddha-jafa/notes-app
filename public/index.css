@@ -20,6 +20,7 @@ button:disabled {
 .top-navbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: white;
 }
 
