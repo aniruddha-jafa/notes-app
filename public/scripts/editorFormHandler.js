@@ -18,7 +18,7 @@ async function initialiseTrackChanges(note) {
     (delta, oldDelta, source) => watchEditorForChanges(source, initialContents))
   const title = document.querySelector('#title')
   const initialTitle = note.title
-  await title, initialTitles
+  await title, initialTitle
   title.addEventListener('input', () => watchTitleForChanges(initialTitle))
   enableSaveButton(false)
 }
