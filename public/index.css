@@ -62,27 +62,13 @@ button:disabled {
  }
 
   .notes-list-item:hover {
-   background-color: grey;
+   background-color: #d3d3d3;
    cursor: pointer;
  }
 
- .delete-button {
-   display: block;
-   background-color: white;
-   border: 0.5px solid  grey;
-   color: grey;
-   text-align: center;
-   text-decoration: none;
-   max-width: 2rem;
-   max-height: 2rem;
-   border-radius: 100%;
-   transition-duration: 0.1s;
- }
-
  .delete-button:hover {
-   background-color: #f44336;
-   color: white;
- }
+   background-color: red;
+ }s
 
 #load-more-button {
   margin: 0.5rem;

@@ -67,6 +67,7 @@ function makeDeleteButton() {
   const deleteButton = document.createElement('button')
   const classes = [
     'btn-close',
+    'delete-button',
   ]
   classes.forEach((item) => {
     deleteButton.classList.add(item)
