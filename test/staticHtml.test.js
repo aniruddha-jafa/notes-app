@@ -56,7 +56,7 @@ describe('check if editor form controls are present', () => {
     expect(getByLabelText(noteForm, 'Title')).toBeInTheDocument()
   })
   test("Has 'New note' button", () => {
-    expect(getByRole(noteForm, 'button', { name: 'New note' })).toBeInTheDocument()
+    expect(getByRole(noteForm, 'button', { name: 'New' })).toBeInTheDocument()
   })
 })
 
