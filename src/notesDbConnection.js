@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+require('dotenv').config()
 
 const connectionOpts = {
   useNewUrlParser: true,

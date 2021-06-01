@@ -35,4 +35,4 @@ const NoteSchema = new mongoose.Schema({
   },
 })
 
-module.exports = notesDbConnection.model('Note', NoteSchema)
+module.exports = NoteSchema
