@@ -14,45 +14,35 @@ async function makeNotesList() {
     Promise.all(noteItems)
       .then((res) => notesList.appendChild(placeholder))
       .catch((err) => { throw new Error(err) })
-  } catch(err) {
+  } catch (err) {
     console.error(err)
   }
 }
 
-// returns a promise -> can be used with Promise.allin makeNoteItems
+// returns a promise -> can be used with Promise.all in makeNoteItems
 async function makeNoteItem(note, placeholder) {
   try {
-    const date = new Date(note.date)
+    const date = new Date(note.date).toDateString()
     const noteItem = document.createElement('div')
-
     noteItem.classList.add('notes-list-item')
-    // noteItem.classList.add('card')
-
-    // text content
-    let displayContent = ''
-    if (note.title) {
-      displayContent = await `${note.title} | ${date.toDateString()}`
-    } else {
-      displayContent = await `Untitled | ${date.toDateString()}`
-    }
-    noteItem.textContent = displayContent
-
+    //  Content
+    let noteTitle = 'Untitled'
+    if (note.title) { noteTitle = note.title }
+    noteItem.innerHTML = `<div class="d-flex flex-column justify-content-flex-start">
+                             <p><b>${noteTitle}</b></p>
+                             <p><em>${date}</em></p>
+                           </div>`
     // delete button
     const deleteButton = makeDeleteButton()
     deleteButton.addEventListener('click', (event) => handleDeleteClick(note._id))
-
     noteItem.appendChild(deleteButton)
-
     // save item
     const form = await document.querySelector('#note-form')
-
     form.addEventListener('submit', (event) => handleFormSubmit(note))
-
     // render on click
     noteItem.addEventListener('click', (event) => handleNoteItemClick(note))
-
     placeholder.appendChild(noteItem)
-  } catch(err) {
+  } catch (err) {
     throw new Error(err)
   }
 }
@@ -68,7 +58,7 @@ async function handleNoteItemClick(note) {
     await globals.quillEditor.setContents(initialContents)
     title.value = note.title
     initialiseTrackChanges(note)
-  } catch(err) {
+  } catch (err) {
     throw new Error(err)
   }
 }
@@ -81,7 +71,6 @@ function makeDeleteButton() {
   classes.forEach((item) => {
     deleteButton.classList.add(item)
   });
-  // deleteButton.textContent = 'X'
   return deleteButton
 }
 

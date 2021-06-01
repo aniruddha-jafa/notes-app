@@ -57,8 +57,8 @@ button:disabled {
    display: flex;
    justify-content: space-between;
    width: auto;
-   border: 0.2px solid #d3d3d3;
    padding: 1rem;
+   border: 0.2px solid #d3d3d3;
  }
 
   .notes-list-item:hover {
