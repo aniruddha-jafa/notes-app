@@ -12,31 +12,11 @@
    height: 100%;
  }
 
-button:disabled {
- color: grey;
-}
-
-
 .top-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
-}
-
- .flex-row {
-   display: flex;
-   flex-direction: row;
-   width: 100%;
- }
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.center {
-  align-items: center;
 }
 
 /* Notes list */
@@ -68,31 +48,21 @@ button:disabled {
 
  .delete-button:hover {
    background-color: red;
- }s
-
-#load-more-button {
-  margin: 0.5rem;
-  width: 5rem;
-  align-self: flex-ends;
-}
+ }
 
 /* Editor & buttons */
-
 #note-form {
   width: 100%;
   padding: 0.5rem;
   height: 80vh;
-  /* border: 1px solid blue; */
 }
 
 #editor-container {
     display:block;
     height: 70vh;
-    /* padding: 1rem; */
   }
 
 #quill-editor {
-  /* border: 0.2px solid #D3D3D3; */
   font-size: 0.8rem;
   padding: 0.5rem;
 }
