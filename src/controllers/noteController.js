@@ -21,7 +21,7 @@ exports.getHome = async function (req, res, next) {
 exports.notesReadOne = async function (req, res, next) {
   try {
     debug('Received GET request for a single note')
-    const note = await Note.findById(req.params.id)
+    const note = await Note.findById(req.params.id).lean()
     if (!note) {
       throw new Error('Note not found')
     }
@@ -37,7 +37,7 @@ let skip = 0
 exports.notesReadMany = async function (req, res, next) {
   try {
     debug('Received GET request for multiple notes')
-    const notes = await Note.find({}).skip(skip).limit(LIMIT)
+    const notes = await Note.find({}).lean().skip(skip).limit(LIMIT)
     res.json(notes)
     debug(`Sent ${notes.length} notes`)
     skip += LIMIT
