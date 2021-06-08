@@ -1,5 +1,5 @@
 // intended to be in shared scope for all scripts
-const globals = {
+const shared = {
   API_ROOT_URL: '/api/notes',
   EMPTY_NOTE: {
     body: {"ops":[{"insert":"\n"}]},
@@ -7,8 +7,9 @@ const globals = {
     title: '',
     _id: '',
   },
+  isNewNote: true,
   quillEditor: null,
-  currentNoteItem: {},
+  currentNoteItem: document.createElement('div'),
   editorOptions: {
     theme: 'snow',
     modules: {

@@ -23,7 +23,7 @@
  #notes-list-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
 
   align-items: stretch;
   color: #000;
@@ -49,6 +49,12 @@
  .delete-button:hover {
    background-color: red;
  }
+
+.note-item-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
 
 /* Editor & buttons */
 #note-form {
