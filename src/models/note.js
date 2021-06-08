@@ -19,7 +19,6 @@ const notesDbConnection = mongoose.createConnection(
 const NoteSchema = new mongoose.Schema({
   title: {
     type: String,
-    minlength: [2, 'Title must contain at least 2 characters'],
     maxlength: [50, 'Title must note exceed 50 characters'],
     trim: true,
     default: 'Untitled',
