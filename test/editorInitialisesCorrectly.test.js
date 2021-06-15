@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+require('dotenv').config()
+
 const puppeteer = require('puppeteer')
 const { JSDOM } = require('jsdom')
 const {
