@@ -8,7 +8,12 @@ const debug = require('debug')('http')
 const notesDbConnection = require('../notesDbConnection')
 const noteSchema = require('../models/note')
 
-const Note = notesDbConnection.model('Note', noteSchema)
+let collectionToUse = 'notes-test'
+if (process.env.NODE_ENV === 'production') {
+  collectionToUse = 'notes'
+}
+
+const Note = notesDbConnection.model('Note', noteSchema, collectionToUse)
 
 exports.getHome = async function (req, res, next) {
   try {
@@ -83,7 +88,7 @@ exports.notesDeleteOne = [
     try {
       const noteId = await req.params.id
       debug('DELETE request for note:', noteId)
-      // await Note.findByIdAndDelete(noteId)
+      await Note.findByIdAndDelete(noteId)
       res.json({ message: 'deleted' })
     } catch (err) {
       next(err)
