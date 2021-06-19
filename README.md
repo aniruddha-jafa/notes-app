@@ -1,4 +1,4 @@
-# notes-app
+# Notes app
 ![notes-app](https://user-images.githubusercontent.com/27879504/122638032-4fe42b00-d10f-11eb-93b2-27475606f841.gif)
 
 
