@@ -4,33 +4,25 @@
 
 require('dotenv').config()
 const puppeteer = require('puppeteer')
-const {
-  toBeInTheDocument,
-  toHaveAttribute,
-} = require('@testing-library/jest-dom')
 
 const puppeteerOptions = {
   executablePath: process.env.PUPPETEER_PATH,
-  headless: false,
 }
 
 let page
 let quillEditor
 
-beforeAll(() => new Promise((resolve, reject) => {
-  const notesHomeUrl = 'http://127.0.0.1:3000/notes'
-  puppeteer.launch(puppeteerOptions)
-    .then(browser => browser.newPage())
-    .then(newPage => { page = newPage })
-    .then(() => page.goto(notesHomeUrl))
-    .then(() => page.waitForSelector('#quill-editor')) // notesList item)
-    .then(editor => { quillEditor = editor })
-    .then(() => resolve())
-    .catch(err => {
-      console.error(err)
-      reject(err)
-    })
-}))
+beforeAll(async () => {
+  try {
+    const notesHomeUrl = 'http://127.0.0.1:3000/notes'
+    const browser = await puppeteer.launch(puppeteerOptions)
+    page = await browser.newPage()
+    await page.goto(notesHomeUrl)
+    quillEditor = await page.waitForSelector('div.ql-container')
+  } catch (err) {
+    console.error(err)
+  }
+})
 
 afterAll(() => {
   page.close()
