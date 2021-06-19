@@ -4,18 +4,6 @@ require('dotenv').config()
 
 const mongoose = require('mongoose')
 
-const connectionOptions = {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-}
-
-const notesDbConnection = mongoose.createConnection(
-  process.env.MONGODB_NOTES_URI,
-  connectionOptions,
-)
-
 const NoteSchema = new mongoose.Schema({
   title: {
     type: String,
