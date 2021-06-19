@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', makeNotesList)
 document.addEventListener('DOMContentLoaded', handleLoadMoreClick)
 
+let firstLoad = true
 async function makeNotesList() {
   try {
     let notes = await makeFetchRequest('GET')
@@ -88,8 +89,9 @@ function makeDeleteButton() {
 
 async function handleDeleteClick(event, noteId) {
   try {
+    shared.currentNoteItem.params = await { _id: noteId }
     event.stopPropagation()
-    makeFetchRequest('DELETE')
+    await makeFetchRequest('DELETE')
     const noteItem = await event.target.parentNode
     noteItem.remove()
     clearContents()
