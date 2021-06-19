@@ -14,7 +14,14 @@ async function makeNotesList() {
     Promise.all(noteItems)
       .then((res) => notesList.appendChild(placeholder))
       .catch((err) => { throw new Error(err) })
+
     handleLoadMoreClick()
+
+    if (firstLoad) {
+      const firstLoadForNotesList = new Event('firstLoadForNotesList')
+      document.dispatchEvent(firstLoadForNotesList)
+      firstLoad = false
+    }
   } catch (err) {
     console.error(err)
   }
@@ -56,20 +63,21 @@ async function makeNoteItem(note, placeholder) {
 
 async function handleNoteItemClick(event, note) {
   try {
-      const initialContents = note.body
-      const title = document.querySelector('#title')
-      await initialContents, title
-      await shared.quillEditor.setContents(initialContents)
-      title.value = note.title
-      initialiseTrackChanges(note)
+    console.info('Clicked on note', note)
+    const initialContents = note.body
+    const title = document.querySelector('#title')
+    await initialContents, title
+    await shared.quillEditor.setContents(initialContents)
+    title.value = note.title
+    initialiseTrackChanges(note)
 
-      const form = document.querySelector('#note-form')
-      await form.removeEventListener('submit', handleFormSubmit)
-      form.addEventListener('submit', handleFormSubmit)
+    const form = document.querySelector('#note-form')
+    await form.removeEventListener('submit', handleFormSubmit)
+    form.addEventListener('submit', handleFormSubmit)
 
-      shared.currentNoteItem = event.currentTarget
-      shared.currentNoteItem.params = note
-      shared.isNewNote = false
+    shared.currentNoteItem = event.currentTarget
+    shared.currentNoteItem.params = note
+    shared.isNewNote = false
   } catch (err) {
     throw new Error(err)
   }

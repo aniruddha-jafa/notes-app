@@ -14,6 +14,10 @@ async function createEditor() {
     // new note
     const newNoteButton = await document.querySelector('#new-note-button')
     newNoteButton.addEventListener('click', (event) => clearContents())
+
+    // dispatch event
+    const editorIsCreatedEvent = new Event('editorIsCreated')
+    document.dispatchEvent(editorIsCreatedEvent)
   } catch (err) {
     console.error(err)
   }
