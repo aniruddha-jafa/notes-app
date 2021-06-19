@@ -6,4 +6,4 @@
 - fullstack web app based around the open-source [quill.js](https://quilljs.com) text editor
 - SPA using vanilla JS
 - back-end uses Express & mongoDB
-- unit & functional tests with jest
+- unit & functional tests with jest and puppeteer
