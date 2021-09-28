@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', handleLoadMoreClick)
 let firstLoad = true
 async function makeNotesList() {
   try {
-    let notes = await makeFetchRequest('GET')
+    let notes = await editorFormHandler.makeFetchRequest('GET')
     notes = await notes.json()
     const notesList = document.querySelector('#notes-list')
 
@@ -50,7 +50,7 @@ async function makeNoteItem(note, placeholder) {
     noteItem.appendChild(deleteButton)
     // save item
     const form = await document.querySelector('#note-form')
-    form.addEventListener('submit', (event) => handleFormSubmit(note))
+    form.addEventListener('submit', (event) => editorFormHandler.handleFormSubmit(note))
     // render on click
     noteItem.addEventListener('click', (event) => handleNoteItemClick(event, note))
     placeholder.appendChild(noteItem)
@@ -69,11 +69,11 @@ async function handleNoteItemClick(event, note) {
     await initialContents, title
     await shared.quillEditor.setContents(initialContents)
     title.value = note.title
-    initialiseTrackChanges(note)
+    editorFormHandler.initialiseTrackChanges(note)
 
     const form = document.querySelector('#note-form')
-    await form.removeEventListener('submit', handleFormSubmit)
-    form.addEventListener('submit', handleFormSubmit)
+    await form.removeEventListener('submit', editorFormHandler.handleFormSubmit)
+    form.addEventListener('submit', editorFormHandler.handleFormSubmit)
 
     shared.currentNoteItem = event.currentTarget
     shared.currentNoteItem.params = note
@@ -103,15 +103,6 @@ async function handleDeleteClick(event, noteId) {
     const noteItem = await event.target.parentNode
     noteItem.remove()
     clearContents()
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-async function enableSaveButton (toEnable) {
-  try {
-    const button = await document.querySelector('#save-button')
-    button.disabled = !toEnable
   } catch (err) {
     console.error(err)
   }
