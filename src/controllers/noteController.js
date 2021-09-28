@@ -8,12 +8,20 @@ const debug = require('debug')('http')
 const notesDbConnection = require('../notesDbConnection')
 const noteSchema = require('../models/note')
 
-let collectionToUse = 'notes-test'
-if (process.env.NODE_ENV === 'production') {
-  collectionToUse = 'notes'
+let Note
+async function getNoteDbConnection() {
+  try {
+    let collectionToUse = 'notes-test'
+    if (process.env.NODE_ENV === 'production') {
+      collectionToUse = 'notes'
+    }
+    Note = await notesDbConnection.model('Note', noteSchema, collectionToUse)
+  } catch (err) {
+    debug('Unable to connect to db: %', err.message)
+  }
 }
 
-const Note = notesDbConnection.model('Note', noteSchema, collectionToUse)
+getNoteDbConnection()
 
 exports.getHome = async function (req, res, next) {
   try {
