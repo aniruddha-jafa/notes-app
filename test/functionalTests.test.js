@@ -15,7 +15,7 @@ let quillEditor
 
 beforeAll(async () => {
   try {
-    const notesHomeUrl = 'http://127.0.0.1:3000/notes'
+    const notesHomeUrl = `http://127.0.0.1:${process.env.PORT}/notes`
     const browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
     await page.goto(notesHomeUrl)
