@@ -14,3 +14,6 @@ rules:
   semi: off
   arrow-parens: warn
   no-undef: warn
+  no-use-before-define: warn
+  no-unused-vars: warn
+  func-names: as-needed
