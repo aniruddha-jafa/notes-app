@@ -5,6 +5,7 @@
 const ejs = require('ejs')
 const path = require('path')
 const util = require('util')
+const debug = require('debug')
 
 const { JSDOM } = require('jsdom')
 const {
@@ -12,6 +13,7 @@ const {
   getByText,
   getByLabelText,
 } = require('@testing-library/dom')
+
 const {
   toBeInTheDocument,
   toHaveAttribute,
@@ -32,7 +34,7 @@ beforeAll(async () => {
     staticHtmlBody = await staticHtml.window.document.body
     // console.info('DOM is:', dom.serialize())
   } catch (err) {
-    console.error(err)
+    debug('Unable to set up DOM: %s', err.message)
   }
 })
 

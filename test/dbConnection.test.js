@@ -3,9 +3,9 @@
  */
 
 require('dotenv').config()
+const debug = require('debug')
 
 const mongoose = require('mongoose')
-const noteSchema = require('../src/models/note')
 
 const testConnectionOpts = {
   useNewUrlParser: true,
@@ -26,7 +26,7 @@ beforeAll(async () => {
     const collections = await connection.db.listCollections().toArray()
     collectionNames = await collections.map((item) => item.name)
   } catch (err) {
-    console.error(err)
+    debug('Unable to connect to db: %s', err.message)
   }
 })
 

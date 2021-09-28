@@ -3,6 +3,7 @@
  */
 
 require('dotenv').config()
+const debug = require('debug')
 const puppeteer = require('puppeteer')
 
 const puppeteerOptions = {
@@ -20,7 +21,7 @@ beforeAll(async () => {
     await page.goto(notesHomeUrl)
     quillEditor = await page.waitForSelector('div.ql-container')
   } catch (err) {
-    console.error(err)
+    debug('Unable to launch test browser:', err.message)
   }
 })
 

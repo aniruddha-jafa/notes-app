@@ -8,10 +8,11 @@ instead of using the actual api - this is the approach suggested in the jest doc
 */
 
 const request = require('supertest')
+const debug = require('debug')
 
-jest.mock('../src/controllers/noteController')
 const app = require('../src/app.js')
 
+jest.mock('../src/controllers/noteController')
 jest.setTimeout(5000)
 
 test('GET /api/notes ', async () => {
@@ -21,7 +22,7 @@ test('GET /api/notes ', async () => {
     expect(res.body.message).toBeDefined()
     expect(res.body.message).toBe('notesReadMany mock response')
   } catch (err) {
-    console.error(err)
+    debug('Unable to GET note: %s', err.message)
   }
 })
 
@@ -36,6 +37,6 @@ test('POST /api/notes', async () => {
     expect(res.body.message).toBeDefined()
     expect(res.body.message).toBe('notesCreateOne mock response')
   } catch (err) {
-    console.error(err)
+    debug('Unable to POST note: %s', err.message)
   }
 })
